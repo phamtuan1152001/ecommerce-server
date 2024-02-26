@@ -13,4 +13,10 @@ router.get("/listAll", [authJwt.verifyToken], CategoryController.getAllItems)
 // [GET]
 router.get("/detail/:id", [authJwt.verifyToken], CategoryController.getDetail)
 
+// [UPDATE] in detail
+router.put("/update/:id", [authJwt.verifyToken], CategoryController.update);
+
+// [DELETE]
+router.delete("/delete/:id", [authJwt.verifyToken], CategoryController.delete);
+
 module.exports = router;

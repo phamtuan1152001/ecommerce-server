@@ -44,6 +44,38 @@ class CategoryController {
       res.status(500).send(error);
     }
   }
+
+  // [PUT]
+  async update(req, res, next) {
+    try {
+      const categoryDetail = await Category.findById(req.params.id).exec();
+      categoryDetail.set(req.body);
+      const result = await categoryDetail.save();
+      res.json({
+        retCode: 0,
+        retText: "Thành công",
+        retData: result,
+      });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
+  // [DELETE]
+  async delete(req, res, next) {
+    try {
+      const result = await Category.deleteOne({
+        _id: req.params.id,
+      }).exec();
+      res.json({
+        retCode: 0,
+        retText: "Thành công",
+        retData: result,
+      });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
 }
 
 module.exports = new CategoryController();
