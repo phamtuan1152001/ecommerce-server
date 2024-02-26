@@ -2,6 +2,7 @@ const config = require("../../config/AuthConfig");
 const db = require("../../app/models");
 const User = db.user;
 const Role = db.role;
+const UserInfo = require("../models/User")
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -12,7 +13,7 @@ const USER_NAME_GMAIL = "petshopecommerce301@gmail.com";
 const APP_PASSWORD_HARD_CODE = "oelntfgcqbaypmrg";
 
 class AuthController {
-  signup(req, res, next) {
+  async signup(req, res, next) {
     const sendEmailActive = (code, userMail) => {
       // console.log("code", code);
       var transporter = nodemailer.createTransport({
@@ -53,52 +54,95 @@ class AuthController {
       });
     };
 
-    User.findOne({
-      username: req.body.username,
-    }).exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
+    const isUsernameExist = await UserInfo.findOne({
+      username: req.body.username
+    }).exec()
+    const isEmailExist = await UserInfo.findOne({
+      email: req.body.email
+    }).exec()
+    // const isPhoneExist = await UserInfo.findOne({
+    //   phone: req.body.phone
+    // })
+    if (
+      !!isUsernameExist ||
+      !!isEmailExist
+    ) {
+      res.status(409).send({
+        message: `Failed! Your ${!!isUsernameExist ? "username" : "email"} is already in use!`
+      })
+      return
+    } else {
+      User.findOne({
+        username: req.body.username,
+      }).exec((err, user) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
 
-      if (user) {
-        res
-          .status(400)
-          .send({ message: "Failed! Your email is already in use!" });
-        return;
-      } else {
-        const { username, password, fullName, phone, address, statusActive } =
-          req.body || {};
-        const codeActive = Math.floor(Math.random() * 900000) + 100000;
+        if (user) {
+          return;
+        } else {
+          const { username, password, fullName, phone, address, statusActive, email } =
+            req.body || {};
+          const codeActive = Math.floor(Math.random() * 900000) + 100000;
 
-        const user = new User({
-          username: username,
-          password: bcrypt.hashSync(password, 8),
-          fullName,
-          phone,
-          address,
-          codeActive,
-          statusActive, // 0 is not active, 1 is active
-        });
+          const user = new User({
+            username: username,
+            password: bcrypt.hashSync(password, 8),
+            fullName,
+            phone,
+            address,
+            email,
+            codeActive,
+            statusActive, // 0 is not active, 1 is active
+          });
 
-        user.save((err, user) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
+          user.save((err, user) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
 
-          if (req.body.roles) {
-            Role.find(
-              {
-                name: { $in: req.body.roles },
-              },
-              (err, roles) => {
+            if (req.body.roles) {
+              Role.find(
+                {
+                  name: { $in: req.body.roles },
+                },
+                (err, roles) => {
+                  if (err) {
+                    res.status(500).send({ message: err });
+                    return;
+                  }
+
+                  user.roles = roles.map((role) => role._id);
+                  user.save((err) => {
+                    if (err) {
+                      res.status(500).send({ message: err });
+                      return;
+                    }
+
+                    // Send email
+                    sendEmailActive(codeActive, email);
+
+                    res.send({
+                      retCode: 0,
+                      retText: "User was registered successfully!",
+                      retData: {
+                        userId: user._id,
+                      },
+                    });
+                  });
+                }
+              );
+            } else {
+              Role.findOne({ name: "user" }, (err, role) => {
                 if (err) {
                   res.status(500).send({ message: err });
                   return;
                 }
 
-                user.roles = roles.map((role) => role._id);
+                user.roles = [role._id];
                 user.save((err) => {
                   if (err) {
                     res.status(500).send({ message: err });
@@ -116,38 +160,13 @@ class AuthController {
                     },
                   });
                 });
-              }
-            );
-          } else {
-            Role.findOne({ name: "user" }, (err, role) => {
-              if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
-
-              user.roles = [role._id];
-              user.save((err) => {
-                if (err) {
-                  res.status(500).send({ message: err });
-                  return;
-                }
-
-                // Send email
-                sendEmailActive(codeActive, username);
-
-                res.send({
-                  retCode: 0,
-                  retText: "User was registered successfully!",
-                  retData: {
-                    userId: user._id,
-                  },
-                });
               });
-            });
-          }
-        });
-      }
-    });
+            }
+          });
+        }
+      });
+    }
+
   }
 
   signin(req, res, next) {

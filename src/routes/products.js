@@ -28,6 +28,9 @@ router.put("/update/:id", [authJwt.verifyToken], ProductsController.update);
 // delete products
 router.delete("/delete/:id", [authJwt.verifyToken], ProductsController.delete);
 
+// best seller products (temporary)
+router.post("/best-seller", ProductsController.getListWithPaginate)
+
 // // search product
 // router.post(
 //   "/search-product",
