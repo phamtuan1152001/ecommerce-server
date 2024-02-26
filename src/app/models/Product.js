@@ -5,39 +5,49 @@ const Schema = mongoose.Schema;
 
 const Product = new Schema(
   {
+    code: {
+      type: String
+    },
     name: {
       type: String,
+    },
+    slug: {
+      type: String
     },
     description: {
       type: String,
     },
-    image: {
+    images: {
       type: Array,
     },
-    price: {
+    defaultImageId: {
+      type: String
+    },
+    regularPrice: {
       type: Number,
     },
-    gender: {
-      type: String,
+    salePrice: {
+      type: Number,
     },
-    age: {
-      type: String,
+    onSale: {
+      type: Boolean
     },
-    weight: {
-      type: String,
+    status: {
+      type: String
     },
-    location: {
-      type: String,
+    quantity: {
+      type: Number
     },
-    dob: {
-      type: String,
+    dateOnSaleFrom: {
+      type: String
     },
-    // totalItem: {
-    //   type: Number,
-    // },
-    // totalProduct: {
-    //   type: Number,
-    // },
+    dateOnSaleTo: {
+      type: String
+    },
+    categories: {
+      type: Schema.Types.ObjectId,
+      ref: "Category"
+    }
   },
   { timestamps: true }
 );

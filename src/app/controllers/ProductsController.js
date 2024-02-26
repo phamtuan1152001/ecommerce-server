@@ -80,7 +80,10 @@ class ProductsController {
   // [GET] in detail
   async getDetail(req, res, next) {
     try {
-      const result = await Product.findById(req.params.id).exec();
+      // const result = await Product.findById(req.params.id).exec();
+      const result = await Product.findById(req.params.id)
+        .populate("categories")
+        .exec()
       res.json({
         retCode: 0,
         retText: "Thành công",

@@ -1,4 +1,5 @@
 const productsRouter = require("./products");
+const categoriesRouter = require("./categories")
 const authRouter = require("./auth");
 const userRouter = require("./user");
 const uploadRouter = require("./upload");
@@ -42,6 +43,9 @@ function route(app) {
 
   // main
   app.use("/products", productsRouter);
+
+  // category
+  app.use("/categories", categoriesRouter)
 
   // home
   app.get("/", (req, res, next) => {
