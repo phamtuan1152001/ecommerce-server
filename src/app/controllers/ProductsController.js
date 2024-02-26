@@ -29,26 +29,21 @@ class ProductsController {
     const {
       page,
       size,
-      gender,
-      weight,
-      price,
-      maxPrice,
-      minPrice,
+      // price,
+      // maxPrice,
+      // minPrice,
+      categories,
       productText,
     } = req.body;
 
     const filter = {};
 
-    if (gender) {
-      Object.assign(filter, { gender });
-    }
+    // if (maxPrice || minPrice) {
+    //   Object.assign(filter, { price: { $gte: minPrice, $lte: maxPrice } });
+    // }
 
-    if (weight) {
-      Object.assign(filter, { weight });
-    }
-
-    if (maxPrice || minPrice) {
-      Object.assign(filter, { price: { $gte: minPrice, $lte: maxPrice } });
+    if (categories) {
+      Object.assign(filter, { categories });
     }
 
     if (productText) {

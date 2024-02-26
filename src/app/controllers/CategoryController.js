@@ -16,6 +16,20 @@ class CategoryController {
     }
   }
 
+  // [GET] all items
+  async getAllItems(req, res, next) {
+    try {
+      const result = await Category.find().exec()
+      res.json({
+        retCode: 0,
+        retText: "Thành công",
+        retData: result,
+      });
+    } catch (err) {
+      res.status(500).send(error);
+    }
+  }
+
   // [GET] in detail
   async getDetail(req, res, next) {
     try {
