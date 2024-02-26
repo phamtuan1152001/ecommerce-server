@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const db = require("../../app/models");
 const Role = db.role;
 
-const url =
-  "mongodb+srv://phamtuan:424411@cluster0.g4e6zgn.mongodb.net/ecommerce_dev?retryWrites=true&w=majority";
+// const url =
+//   "mongodb+srv://phamtuan:424411@cluster0.g4e6zgn.mongodb.net/ecommerce_dev?retryWrites=true&w=majority";
+const url = "mongodb+srv://phamtuan1152001:qt79HJFDjoTIC3r8@thesisproject.8pvjbbb.mongodb.net/?retryWrites=true&w=majority&appName=thesisproject"
 
 async function connect() {
   try {
