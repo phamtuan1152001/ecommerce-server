@@ -10,6 +10,7 @@ const orderRouter = require("./order");
 const newsRouter = require("./news");
 
 // "start": "nodemon --inspect src/index.js",
+// "start": "node src/index.js",
 
 function route(app) {
   // news
