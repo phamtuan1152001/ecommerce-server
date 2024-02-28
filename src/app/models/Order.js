@@ -8,21 +8,45 @@ const Order = new Schema(
     userId: {
       type: String,
     },
-    cartId: {
-      type: String,
-    },
-    infoOrder: {
-      type: Object,
-    },
     statusOrder: {
       type: Number,
     },
-    methodPayment: {
-      type: Number,
+    paymentMethod: {
+      type: String,
     },
-    methodReiceive: {
-      type: Number,
+    orderAddress: {
+      fullName: {
+        type: String
+      },
+      phone: {
+        type: String
+      },
+      email: {
+        type: String
+      },
+      address: {
+        type: String
+      },
+      provinceId: {
+        type: Number
+      },
+      districtId: {
+        type: Number,
+      },
+      wardId: {
+        type: Number
+      },
+      fullAddress: {
+        type: String
+      }
     },
+    cartId: {
+      type: String,
+    },
+    cartDetail: {
+      type: Schema.Types.ObjectId,
+      ref: "Cart"
+    }
     // voucherId: {
     //     type: String,
     // }

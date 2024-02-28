@@ -189,7 +189,10 @@ class CartController {
   // Remove item in cart [PATCH]
   async removeItemInCart(req, res, next) {
     try {
-      const { userId, productId } = req.body;
+      const { userId, productId, total, subTotal } = req.body;
+      const cartDetail = await Cart.findOne({
+        userId,
+      });
       Cart.updateOne(
         {
           "userId": userId
@@ -199,6 +202,10 @@ class CartController {
             items: {
               productId
             }
+          },
+          $set: {
+            totalPrice: cartDetail?.totalPrice - total,
+            subTotalPrice: cartDetail?.subTotalPrice - subTotal
           }
         }
       ).then(result => {

@@ -4,6 +4,7 @@ const Product = require("../models/Product");
 const User = require("../models/User");
 
 class OrderController {
+  // Create Order Client [POST]
   async createOrder(req, res, next) {
     // statusOrder: gom 3 trang thai: 0 la cho thanh toan, 1 la thanh toan thanh cong, 2 la huy giao dich
 
@@ -16,7 +17,7 @@ class OrderController {
       const result = await order.save();
       res.status(200).json({
         retCode: 0,
-        retText: "Create successfully",
+        retText: "Create order successfully",
         retData: result,
       });
     } catch (error) {
@@ -24,6 +25,7 @@ class OrderController {
     }
   }
 
+  // GET LIST ORDER ADMIN [POST]
   async getListOrder(req, res, next) {
     const getPagination = (page, size) => {
       const limit = size ? +size : 0;
@@ -80,6 +82,7 @@ class OrderController {
       });
   }
 
+  // GET DETAIL ORDER [GET]
   async getDetailOrder(req, res, next) {
     try {
       const result = await Order.findById(req.params.id).exec();
@@ -128,6 +131,7 @@ class OrderController {
     }
   }
 
+  // DELETE ORDER ADMIN [DELETE]
   async deleteDetailOrder(req, res, next) {
     try {
       const result = await Order.deleteOne({
@@ -135,7 +139,7 @@ class OrderController {
       }).exec();
       res.json({
         retCode: 0,
-        retText: "Successfully",
+        retText: "Successfully Delete Detail Order",
         retData: result,
       });
     } catch (error) {
@@ -143,6 +147,7 @@ class OrderController {
     }
   }
 
+  // UPDATE ORDER [PUT]
   async updateOrder(req, res, next) {
     try {
       const orderDetail = await Order.findById(req.params.id).exec();
@@ -150,7 +155,7 @@ class OrderController {
       const result = await orderDetail.save();
       res.json({
         retCode: 0,
-        retText: "Successfully",
+        retText: "Successfully Update Order",
         retData: result,
       });
     } catch (error) {
@@ -158,6 +163,7 @@ class OrderController {
     }
   }
 
+  // GET LIST ORDER CLIENT [POST]
   async getListOrderClient(req, res, next) {
     const getPagination = (page, size) => {
       const limit = size ? +size : 0;
@@ -179,33 +185,33 @@ class OrderController {
 
     const { limit, offset } = getPagination(page, size);
 
-    Order.paginate(filter, { offset, limit })
+    Order.paginate(filter, { offset, limit, populate: 'cartDetail' })
       .then(async (data) => {
         const { totalDocs, docs, totalPages, page } = data || {};
-        const listOrder = docs.map(async (item) => {
-          const dataUser = await User.findById(item.userId);
-          const dataCart = await Cart.findById(item.cartId);
-          return {
-            ...item,
-            userId: dataUser,
-            cartId: dataCart,
-          };
-        });
-        const resolvedPromises = await Promise.all(listOrder);
-        const resultData = resolvedPromises.map((item) => {
-          const { _doc, userId, cartId } = item || {};
-          return {
-            ..._doc,
-            userId,
-            cartId,
-          };
-        });
+        // const listOrder = docs.map(async (item) => {
+        //   const dataUser = await User.findById(item.userId);
+        //   const dataCart = await Cart.findById(item.cartId);
+        //   return {
+        //     ...item,
+        //     userId: dataUser,
+        //     cartId: dataCart,
+        //   };
+        // });
+        // const resolvedPromises = await Promise.all(listOrder);
+        // const resultData = resolvedPromises.map((item) => {
+        //   const { _doc, userId, cartId } = item || {};
+        //   return {
+        //     ..._doc,
+        //     userId,
+        //     cartId,
+        //   };
+        // });
         res.json({
           retCode: 0,
           retText: "List order",
           retData: {
             totalItems: totalDocs,
-            orders: resultData,
+            orders: docs,
             totalPages: totalPages,
             currentPage: page - 1,
           },

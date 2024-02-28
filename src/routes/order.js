@@ -10,21 +10,21 @@ router.post(
   OrderController.getListOrderClient
 );
 
-// Create order
+// Create order client
 router.post(
   "/create-order",
   [authJwt.verifyToken],
   OrderController.createOrder
 );
 
-// Get list order
+// Get list order admin
 router.post(
   "/get-list-order",
   [authJwt.verifyToken],
   OrderController.getListOrder
 );
 
-// Get detail order
+// Get detail order 
 router.get(
   "/get-detail-order/:id",
   [authJwt.verifyToken],
@@ -38,7 +38,7 @@ router.delete(
   OrderController.deleteDetailOrder
 );
 
-// Update detail order
+// Update detail order admin
 router.put(
   "/update-detail-order/:id",
   [authJwt.verifyToken],
