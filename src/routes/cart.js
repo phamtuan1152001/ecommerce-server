@@ -7,15 +7,17 @@ const CartController = require("../app/controllers/CartController");
 // Create list item in cart
 router.post("/create-cart", [authJwt.verifyToken], CartController.createCart);
 
-// Get item in cart
-router.post("/get-cart", [authJwt.verifyToken], CartController.getCart);
+// Add single item in cart
+router.post("/add-single-item", [authJwt.verifyToken], CartController.addSingleItemInCart);
 
-// Delete item in cart
-router.post(
-  "/delete-item",
-  [authJwt.verifyToken],
-  CartController.deleteItemCart
-);
+// Get item in cart
+router.get("/get-cart", [authJwt.verifyToken], CartController.getCart);
+
+// Remove item in cart
+router.patch("/remove-item-cart", [authJwt.verifyToken], CartController.removeItemInCart)
+
+// Delete single item in cart
+router.post("/delete-single-item", [authJwt.verifyToken], CartController.deleteSingleItemInCart)
 
 // Check cart exist
 router.post(

@@ -8,15 +8,33 @@ const Cart = new Schema(
     userId: {
       type: String,
     },
+    items: [{
+      productId: {
+        type: String
+      },
+      quantity: {
+        type: Number
+      },
+      product: {
+        type: Schema.Types.ObjectId,
+        ref: "Product"
+      },
+      total: {
+        type: Number
+      },
+      subTotal: {
+        type: Number
+      }
+    }],
     totalPrice: {
       type: Number,
     },
-    totalProduct: {
+    subTotalPrice: {
       type: Number,
     },
-    listCart: {
-      type: Array,
-    },
+    // totalProduct: {
+    //   type: Number,
+    // },
   },
   { timestamps: true }
 );
