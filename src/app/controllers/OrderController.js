@@ -43,33 +43,27 @@ class OrderController {
 
     const { limit, offset } = getPagination(page, size);
 
-    Order.paginate(filter, { offset, limit })
+    Order.paginate(filter, {
+      offset,
+      limit,
+      populate: [
+        {
+          path: "cartDetail",
+          populate: {
+            path: "items.product", // Assuming "product" is the field referencing the product model
+            // select: "code name" // Adjust fields as needed
+          }
+        }
+      ]
+    })
       .then(async (data) => {
         const { totalDocs, docs, totalPages, page } = data || {};
-        const listOrder = docs.map(async (item) => {
-          const dataUser = await User.findById(item.userId);
-          const dataCart = await Cart.findById(item.cartId);
-          return {
-            ...item,
-            userId: dataUser,
-            cartId: dataCart,
-          };
-        });
-        const resolvedPromises = await Promise.all(listOrder);
-        const resultData = resolvedPromises.map((item) => {
-          const { _doc, userId, cartId } = item || {};
-          return {
-            ..._doc,
-            userId,
-            cartId,
-          };
-        });
         res.json({
           retCode: 0,
           retText: "List order",
           retData: {
             totalItems: totalDocs,
-            orders: resultData,
+            orders: docs,
             totalPages: totalPages,
             currentPage: page - 1,
           },
@@ -85,46 +79,20 @@ class OrderController {
   // GET DETAIL ORDER [GET]
   async getDetailOrder(req, res, next) {
     try {
-      const result = await Order.findById(req.params.id).exec();
-
-      const { userId, cartId, ...rest } = result || {};
-      const userInfo = await User.findById(userId);
-      const cartInfo = await Cart.findById(cartId);
-
-      const listCartDetail = cartInfo._doc.listCart.map(async (item) => {
-        const { _id, totalPrice, totalItem } = item || {};
-        const data = await Product.findById(_id);
-        return {
-          totalPrice,
-          totalItem,
-          ...data,
-        };
-      });
-
-      const resolvedPromises = await Promise.all(listCartDetail);
-
-      const cartDetail = {
-        ...cartInfo._doc,
-        listCart: resolvedPromises.map((item) => {
-          const { totalItem, totalPrice, _doc } = item || {};
-          return {
-            ..._doc,
-            totalItem,
-            totalPrice,
-          };
-        }),
-      };
-
-      const detailOrder = {
-        ...rest._doc,
-        userId: userInfo,
-        cartId: cartDetail,
-      };
+      const result = await Order.findById(req.params.id)
+        .populate({
+          path: "cartDetail",
+          populate: {
+            path: "items.product", // Assuming "product" is the field referencing the product model
+            // select: "code name" // Adjust fields as needed
+          }
+        })
+        .exec();
 
       res.json({
         retCode: 0,
         retText: "Successfully",
-        retData: detailOrder,
+        retData: result,
       });
     } catch (error) {
       res.status(500).send(error);
@@ -185,27 +153,24 @@ class OrderController {
 
     const { limit, offset } = getPagination(page, size);
 
-    Order.paginate(filter, { offset, limit, populate: 'cartDetail' })
+    Order.paginate(filter, {
+      offset,
+      limit,
+      populate: [
+        // {
+        //   path: "cartDetail"
+        // },
+        {
+          path: "cartDetail",
+          populate: {
+            path: "items.product", // Assuming "product" is the field referencing the product model
+            // select: "code name" // Adjust fields as needed
+          }
+        }
+      ]
+    })
       .then(async (data) => {
         const { totalDocs, docs, totalPages, page } = data || {};
-        // const listOrder = docs.map(async (item) => {
-        //   const dataUser = await User.findById(item.userId);
-        //   const dataCart = await Cart.findById(item.cartId);
-        //   return {
-        //     ...item,
-        //     userId: dataUser,
-        //     cartId: dataCart,
-        //   };
-        // });
-        // const resolvedPromises = await Promise.all(listOrder);
-        // const resultData = resolvedPromises.map((item) => {
-        //   const { _doc, userId, cartId } = item || {};
-        //   return {
-        //     ..._doc,
-        //     userId,
-        //     cartId,
-        //   };
-        // });
         res.json({
           retCode: 0,
           retText: "List order",
