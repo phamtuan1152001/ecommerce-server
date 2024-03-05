@@ -53,9 +53,16 @@ class ProductsController {
     const { limit, offset } = getPagination(page, size);
 
     Product.paginate(filter, {
-      offset, limit, sort: {
+      offset,
+      limit,
+      sort: {
         createdAt: -1
-      }
+      },
+      populate: [
+        {
+          path: "categories"
+        },
+      ]
     })
       .then((data) => {
         res.json({
