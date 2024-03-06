@@ -86,14 +86,40 @@ class ProductsController {
   // [GET] in detail
   async getDetail(req, res, next) {
     try {
-      // const result = await Product.findById(req.params.id).exec();
-      const result = await Product.findById(req.params.id)
-        .populate("categories")
-        .exec()
+      // const result = await Product.findById(req.params.id)
+      //   .populate("categories")
+      //   .exec()
+      const result = await Product.aggregate([
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categories",
+            foreignField: "_id",
+            as: "category"
+          }
+        },
+        {
+          $match: {
+            "category.slug": req.params.cateSlug
+          }
+        }
+      ]).exec();
+      const modifiedResult = result.map(product => {
+        const { category, ...rest } = product || {}
+        return {
+          ...rest,
+          categories: product.category.find(cat =>
+            cat.slug === req.params.cateSlug
+          )
+        }
+      });
+      const productDetail = modifiedResult.find(item =>
+        item.slug === req.params.slug
+      )
       res.json({
         retCode: 0,
         retText: "Thành công",
-        retData: result,
+        retData: productDetail,
       });
     } catch (error) {
       res.status(500).send(error);

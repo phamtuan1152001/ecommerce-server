@@ -18,7 +18,7 @@ router.post(
 
 // get detail products
 router.get(
-  "/detail/:id" /* , [authJwt.verifyToken] */,
+  "/detail/:cateSlug/:slug" /* , [authJwt.verifyToken] */,
   ProductsController.getDetail
 );
 
