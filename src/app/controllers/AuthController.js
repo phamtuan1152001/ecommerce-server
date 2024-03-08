@@ -68,7 +68,9 @@ class AuthController {
       !!isEmailExist
     ) {
       res.status(409).send({
-        message: `Failed! Your ${!!isUsernameExist ? "username" : "email"} is already in use!`
+        retCode: 3,
+        retData: {},
+        retText: `Failed! Your ${!!isUsernameExist ? "username" : "email"} is already in use!`
       })
       return
     } else {
@@ -123,7 +125,7 @@ class AuthController {
                     }
 
                     // Send email
-                    sendEmailActive(codeActive, email);
+                    /* sendEmailActive(codeActive, email); */
 
                     res.send({
                       retCode: 0,
@@ -181,7 +183,11 @@ class AuthController {
         }
 
         if (!user) {
-          return res.status(404).send({ message: "User Not found." });
+          return res.status(404).send({
+            retCode: 1,
+            retData: {},
+            retText: "User Not found."
+          });
         } else {
           if (user.statusActive === 0) {
             res.json({

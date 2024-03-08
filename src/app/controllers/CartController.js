@@ -42,11 +42,11 @@ class CartController {
             productId,
             quantity,
             product: productId,
-            total: total * quantity, // REGULAR PRICE
-            subTotal: subTotal * quantity // SALE PRICE
+            total: subTotal > 0 ? subTotal * quantity : total * quantity, // REGULAR PRICE
+            subTotal: subTotal > 0 ? total * quantity : 0 // SALE PRICE
           }],
-          totalPrice: total * quantity, // REGULAR PRICE OF ALL ITEM
-          subTotalPrice: subTotal * quantity // SALE PRICE OF ALL ITEM
+          totalPrice: subTotal > 0 ? subTotal * quantity : total * quantity, // REGULAR PRICE OF ALL ITEM
+          subTotalPrice: subTotal > 0 ? total * quantity : 0 // SALE PRICE OF ALL ITEM
         }
         const cart = new Cart(req);
         const createCart = await cart.save();
@@ -67,8 +67,8 @@ class CartController {
               productId,
               quantity,
               product: productId,
-              total: total * quantity, // REGULAR PRICE
-              subTotal: subTotal * quantity // SALE PRICE
+              total: subTotal > 0 ? subTotal * quantity : total * quantity, // REGULAR PRICE
+              subTotal: subTotal > 0 ? total * quantity : 0 // SALE PRICE
             },
           ]
           const reqExist = {
@@ -79,8 +79,8 @@ class CartController {
                 productId,
                 quantity,
                 product: productId,
-                total: total * quantity, // REGULAR PRICE
-                subTotal: subTotal * quantity // SALE PRICE
+                total: subTotal > 0 ? subTotal * quantity : total * quantity, // REGULAR PRICE
+                subTotal: subTotal > 0 ? total * quantity : 0 // SALE PRICE
               },
             ],
             totalPrice: getPriceTotal(listItemsInCart),
@@ -102,20 +102,23 @@ class CartController {
             {
               $set: {
                 "items.$[elem].quantity": existProduct?.quantity + quantity,
-                'items.$[elem].total': existProduct?.total + total,
-                'items.$[elem].subTotal': existProduct?.subTotal + subTotal,
-                totalPrice: cartDetail?.totalPrice + total,
-                subTotalPrice: cartDetail?.subTotalPrice + subTotal
+                'items.$[elem].total': subTotal > 0 ? existProduct?.total + subTotal : existProduct?.total + total,
+                'items.$[elem].subTotal': subTotal > 0 ? existProduct?.subTotal + total : 0,
+                totalPrice: subTotal > 0 ? cartDetail?.totalPrice + subTotal : cartDetail?.totalPrice + total,
+                subTotalPrice: subTotal > 0 ? cartDetail?.subTotalPrice + total : cartDetail?.subTotalPrice
               }
             },
             { arrayFilters: [{ "elem.productId": productId }] }
           )
-            .then(result => {
+            .then(async (result) => {
               // console.log("result", result);
+              const listCart = await Cart.findOne({ userId })
+                // .populate("items.product")
+                .exec()
               res.json({
                 retCode: 0,
                 retText: "Successfully duplicate",
-                retData: {},
+                retData: listCart,
               });
             })
             .catch(error => {
@@ -144,10 +147,10 @@ class CartController {
         {
           $set: {
             "items.$[elem].quantity": existProduct?.quantity + quantity,
-            'items.$[elem].total': existProduct?.total + total,
-            'items.$[elem].subTotal': existProduct?.subTotal + subTotal,
-            totalPrice: cartDetail?.totalPrice + total,
-            subTotalPrice: cartDetail?.subTotalPrice + subTotal
+            'items.$[elem].total': subTotal > 0 ? existProduct?.total + subTotal : existProduct?.total + total,
+            'items.$[elem].subTotal': subTotal > 0 ? existProduct?.subTotal + total : 0,
+            totalPrice: subTotal > 0 ? cartDetail?.totalPrice + subTotal : cartDetail?.totalPrice + total,
+            subTotalPrice: subTotal > 0 ? cartDetail?.subTotalPrice + total : cartDetail?.subTotalPrice
           }
         },
         { arrayFilters: [{ "elem.productId": productId }] }
@@ -157,7 +160,9 @@ class CartController {
           res.json({
             retCode: 0,
             retText: "Successfully add single item in cart",
-            retData: {},
+            retData: {
+              userId
+            },
           });
         })
         .catch(error => {
@@ -212,7 +217,9 @@ class CartController {
         res.json({
           retCode: 0,
           retText: "Successfully delete",
-          retData: {},
+          retData: {
+            userId
+          },
         });
       })
         .catch(error => {
@@ -238,10 +245,10 @@ class CartController {
         {
           $set: {
             "items.$[elem].quantity": existProduct?.quantity - quantity,
-            'items.$[elem].total': existProduct?.total - total,
-            'items.$[elem].subTotal': existProduct?.subTotal - subTotal,
-            totalPrice: cartDetail?.totalPrice - total,
-            subTotalPrice: cartDetail?.subTotalPrice - subTotal
+            'items.$[elem].total': subTotal > 0 ? existProduct?.total - subTotal : existProduct?.total - total,
+            'items.$[elem].subTotal': subTotal > 0 ? existProduct?.subTotal - total : 0,
+            totalPrice: subTotal > 0 ? cartDetail?.totalPrice - subTotal : cartDetail?.totalPrice - total,
+            subTotalPrice: subTotal > 0 ? cartDetail?.subTotalPrice - total : cartDetail?.subTotalPrice
           }
         },
         { arrayFilters: [{ "elem.productId": productId }] }
@@ -251,7 +258,9 @@ class CartController {
           res.json({
             retCode: 0,
             retText: "Successfully delete single item in cart",
-            retData: {},
+            retData: {
+              userId
+            },
           });
         })
         .catch(error => {

@@ -28,13 +28,13 @@ const Order = new Schema(
         type: String
       },
       provinceId: {
-        type: Number
+        type: String
       },
       districtId: {
-        type: Number,
+        type: String,
       },
       wardId: {
-        type: Number
+        type: String
       },
       fullAddress: {
         type: String

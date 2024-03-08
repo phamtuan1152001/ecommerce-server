@@ -11,7 +11,7 @@ router.post("/create-cart", [authJwt.verifyToken], CartController.createCart);
 router.post("/add-single-item", [authJwt.verifyToken], CartController.addSingleItemInCart);
 
 // Get item in cart
-router.get("/get-cart", [authJwt.verifyToken], CartController.getCart);
+router.post("/get-cart", [authJwt.verifyToken], CartController.getCart);
 
 // Remove item in cart
 router.patch("/remove-item-cart", [authJwt.verifyToken], CartController.removeItemInCart)
