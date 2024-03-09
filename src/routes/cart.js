@@ -26,4 +26,11 @@ router.post(
   CartController.checkCartExist
 );
 
+// Delete all products in cart
+router.post(
+  "/delete-all-products-in-cart",
+  [authJwt.verifyToken],
+  CartController.deleteAllProductsInCart
+)
+
 module.exports = router;

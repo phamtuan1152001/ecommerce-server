@@ -13,7 +13,16 @@ class OrderController {
     // methodReiceive: gom 2 trang thai: 0 la giao hang online, 1 la nhan hang truc tiep
 
     try {
-      const order = new Order(req.body);
+      // console.log("req.body", req.body);
+      const cartDetail = await Cart.findOne({
+        userId: req.body.userId,
+      }).populate("items.product").exec();
+      const reqSave = {
+        ...req.body,
+        cartDetail: cartDetail
+      }
+      // res.send(reqSave)
+      const order = new Order(reqSave);
       const result = await order.save();
       res.status(200).json({
         retCode: 0,

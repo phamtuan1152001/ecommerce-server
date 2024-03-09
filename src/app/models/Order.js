@@ -44,9 +44,50 @@ const Order = new Schema(
       type: String,
     },
     cartDetail: {
-      type: Schema.Types.ObjectId,
-      ref: "Cart"
+      _id: {
+        type: String
+      },
+      userId: {
+        type: String
+      },
+      items: [{
+        productId: {
+          type: String,
+        },
+        quantity: {
+          type: Number
+        },
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: "Product"
+        },
+        total: {
+          type: Number
+        },
+        subTotal: {
+          type: Number
+        },
+        _id: {
+          type: String
+        }
+      }],
+      totalPrice: {
+        type: Number
+      },
+      subTotalPrice: {
+        type: Number,
+      },
+      createdAt: {
+        type: String
+      },
+      updatedAt: {
+        type: String
+      }
     }
+    // cartDetail: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Cart"
+    // }
     // voucherId: {
     //     type: String,
     // }

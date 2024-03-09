@@ -293,6 +293,24 @@ class CartController {
       res.status(500).send(err);
     }
   }
+
+  // DELETE ALL PRODUCT IN CART 
+  async deleteAllProductsInCart(req, res, next) {
+    try {
+      const { userId } = req.body || {}
+      const result = await Cart.deleteMany({ userId }).exec()
+      res.json({
+        retCode: 0,
+        retText: "Successfully Delete All Products In Cart",
+        retData: {
+          ...result,
+          userId
+        },
+      });
+    } catch (err) {
+      res.status(500).send(error);
+    }
+  }
 }
 
 module.exports = new CartController();
