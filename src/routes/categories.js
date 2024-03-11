@@ -8,7 +8,7 @@ const CategoryController = require("../app/controllers/CategoryController");
 router.post("/create", [authJwt.verifyToken], CategoryController.create)
 
 // [GET] all items Admin
-router.get("/listAllAdmin", [authJwt.verifyToken], CategoryController.getAllItems)
+router.post("/listAllAdmin", [authJwt.isAdmin], CategoryController.getAllItems)
 
 // [GET] all items Client
 router.get("/listAllClient", CategoryController.getAllItems)

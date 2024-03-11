@@ -23,12 +23,13 @@ verifyToken = (req, res, next) => {
 };
 
 isAdmin = (req, res, next) => {
-  User.findById(req.userId).exec((err, user) => {
+  // console.log("req", req.body);
+  User.findById(req.body.userId).exec((err, user) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(500).send({ message: "err haha" });
       return;
     }
-
+    // console.log("user", user);
     Role.find(
       {
         _id: { $in: user.roles },
