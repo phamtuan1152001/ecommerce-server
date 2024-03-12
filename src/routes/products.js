@@ -7,25 +7,38 @@ const ProductsController = require("../app/controllers/ProductsController");
 // Admin
 
 // create products
-router.post("/create", [authJwt.verifyToken], ProductsController.create);
+router.post("/create", [authJwt.isAdmin], ProductsController.create);
 
-// post list producst with pagination
+// post list producst with pagination Client
 router.post(
   "/listProducts",
-  /*   [authJwt.verifyToken],
-   */ ProductsController.getListWithPaginate
+  ProductsController.getListWithPaginate
 );
 
-// get detail products
+// get detail products Client
 router.get(
-  "/detail/:cateSlug/:slug" /* , [authJwt.verifyToken] */,
+  "/detail/:cateSlug/:slug",
   ProductsController.getDetail
 );
 
-// update products
-router.put("/update/:id", [authJwt.verifyToken], ProductsController.update);
+// post list producst with pagination Admin
+router.post(
+  "/listProductsAdmin",
+  [authJwt.isAdmin],
+  ProductsController.getListWithPaginate
+);
 
-// delete products
+// get detail products Admin
+router.get(
+  "/detail-admin/:cateSlug/:slug",
+  // [authJwt.isAdmin],
+  ProductsController.getDetail
+);
+
+// update products Admin
+router.put("/update/:id", [authJwt.isAdmin], ProductsController.update);
+
+// delete products Admin
 router.delete("/delete/:id", [authJwt.verifyToken], ProductsController.delete);
 
 // best seller products (temporary)

@@ -34,6 +34,7 @@ class ProductsController {
       // minPrice,
       categories,
       productText,
+      status
     } = req.body;
 
     const filter = {};
@@ -48,6 +49,10 @@ class ProductsController {
 
     if (productText) {
       filter.name = { $regex: new RegExp(productText), $options: "i" };
+    }
+
+    if (status) {
+      Object.assign(filter, { status });
     }
 
     const { limit, offset } = getPagination(page, size);
