@@ -3,45 +3,59 @@ const router = express.Router();
 const { authJwt } = require("../app/middleware");
 const OrderController = require("../app/controllers/OrderController");
 
-// Get list order client
-router.post(
-  "/get-list-order-client",
-  [authJwt.verifyToken],
-  OrderController.getListOrderClient
-);
-
-// Create order client
+// Create order client [CLIENT]
 router.post(
   "/create-order",
   [authJwt.verifyToken],
   OrderController.createOrder
 );
 
-// Get list order admin
+// Get list order [CLIENT]
 router.post(
-  "/get-list-order",
+  "/get-list-order-client",
   [authJwt.verifyToken],
-  OrderController.getListOrder
+  OrderController.getListOrderClient
 );
 
-// Get detail order 
+// Get detail order [CLIENT]
 router.get(
-  "/get-detail-order/:id",
+  "/get-detail-order-client/:id",
   [authJwt.verifyToken],
   OrderController.getDetailOrder
 );
 
-// Delete detail order
+// Delete detail order [CLIENT]
+// router.delete(
+//   "/delete-detail-order/:id",
+//   [authJwt.verifyToken],
+//   OrderController.deleteDetailOrder
+// );
+
+// Get list order [ADMIN]
+router.post(
+  "/get-list-order-admin",
+  [authJwt.isAdmin],
+  OrderController.getListOrder
+);
+
+// Get detail order [ADMIN]
+router.post(
+  "/get-detail-order-admin/:id",
+  [authJwt.isAdmin],
+  OrderController.getDetailOrder
+);
+
+// Delete detail order [ADMIN]
 router.delete(
-  "/delete-detail-order/:id",
+  "/delete-detail-order-admin/:id",
   [authJwt.verifyToken],
   OrderController.deleteDetailOrder
 );
 
-// Update detail order admin
+// Update detail order [ADMIN]
 router.put(
-  "/update-detail-order/:id",
-  [authJwt.verifyToken],
+  "/update-detail-order-admin/:id",
+  [authJwt.isAdmin],
   OrderController.updateOrder
 );
 

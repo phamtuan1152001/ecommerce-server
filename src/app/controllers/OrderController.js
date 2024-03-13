@@ -42,12 +42,15 @@ class OrderController {
 
       return { limit, offset };
     };
-    const { page, size, productText } = req.body;
+    const { page, size, orderText } = req.body;
 
     const filter = {};
 
-    if (productText) {
-      filter.name = { $regex: new RegExp(productText), $options: "i" };
+    if (orderText) {
+      const searching = { $regex: new RegExp(orderText), $options: "i" }
+      Object.assign(filter, {
+        "orderAddress.fullName": searching
+      })
     }
 
     const { limit, offset } = getPagination(page, size);
@@ -127,12 +130,18 @@ class OrderController {
   // UPDATE ORDER [PUT]
   async updateOrder(req, res, next) {
     try {
+      const { userId, mainUserId, ...rest } = req.body
+      const payload = {
+        userId: mainUserId,
+        ...rest
+      }
+      // console.log("req", payload);
       const orderDetail = await Order.findById(req.params.id).exec();
-      orderDetail.set(req.body);
+      orderDetail.set(payload);
       const result = await orderDetail.save();
       res.json({
         retCode: 0,
-        retText: "Successfully Update Order",
+        retText: "Successfully Update Status Order",
         retData: result,
       });
     } catch (error) {
@@ -148,13 +157,13 @@ class OrderController {
 
       return { limit, offset };
     };
-    const { page, size, productText, userId } = req.body;
+    const { page, size, orderText, userId } = req.body;
 
     const filter = {};
 
-    if (productText) {
-      filter.name = { $regex: new RegExp(productText), $options: "i" };
-    }
+    // if (orderText) {
+    //   filter.name = { $regex: new RegExp(orderText), $options: "i" };
+    // }
 
     if (userId) {
       Object.assign(filter, { userId });
