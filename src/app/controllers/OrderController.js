@@ -42,9 +42,18 @@ class OrderController {
 
       return { limit, offset };
     };
-    const { page, size, orderText } = req.body;
+    const { page, size, orderText, dateStart, dateEnd } = req.body;
 
     const filter = {};
+
+    if (dateStart || dateEnd) {
+      Object.assign(filter, {
+        createdAt: {
+          $gte: new Date(dateStart),
+          $lte: new Date(dateEnd)
+        }
+      });
+    }
 
     if (orderText) {
       const searching = { $regex: new RegExp(orderText), $options: "i" }
@@ -54,6 +63,7 @@ class OrderController {
     }
 
     const { limit, offset } = getPagination(page, size);
+    // console.log("filter", filter);
 
     Order.paginate(filter, {
       offset,
