@@ -9,11 +9,15 @@ const voucherRouter = require("./vouchers");
 const cartRouter = require("./cart");
 const orderRouter = require("./order");
 const newsRouter = require("./news");
+const dalleRouter = require("./dalle")
 
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+  // dalle-e
+  app.use("/dall-e", dalleRouter)
+
   // news
   app.use("/news", newsRouter);
 
