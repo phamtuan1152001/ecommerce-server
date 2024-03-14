@@ -17,7 +17,7 @@ class DallEController {
         response_format: 'b64_json'
       })
       // // const image = response.data[0].b64_json /* response.data.data[0].b64__json */
-      console.log("response", response);
+      // console.log("response", response);
       res.status(200).json({
         retCode: 0,
         retText: "Generate successfully",
