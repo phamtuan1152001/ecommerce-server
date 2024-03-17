@@ -1,3 +1,6 @@
+const https = require('https');
+const crypto = require('crypto');
+
 class PaymentController {
   createPaymentMomo(request, response, next) {
     //parameters
@@ -5,13 +8,13 @@ class PaymentController {
     var accessKey = "F8BBA842ECF85";
     var secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
     /*  */
-    var orderInfo = "pay with MoMo";
-    var amount = "5000000";
-    var orderId = /* requestId */Math.floor(Math.random() * 90000) + 10000;
+    var orderInfo = /* "pay with MoMo" */request?.body?.orderInfo;
+    var amount = /* "5000000" */request?.body?.amount;
+    var orderId = /* requestId *//* Math.floor(Math.random() * 90000) + 10000 */request?.body?.orderId;
     /*  */
     var requestId = partnerCode + new Date().getTime();
     var requestType = "payWithATM"
-    var redirectUrl = "http://localhost:3002/";
+    var redirectUrl = "http://localhost:3000/thank";
     var ipnUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
     // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
     var extraData = ""; //pass empty value if your merchant does not have stores
@@ -23,7 +26,6 @@ class PaymentController {
     // console.log("--------------------RAW SIGNATURE----------------")
     // console.log(rawSignature)
     //signature
-    const crypto = require('crypto');
     var signature = crypto.createHmac('sha256', secretkey)
       .update(rawSignature)
       .digest('hex');
@@ -46,7 +48,6 @@ class PaymentController {
       lang: 'en'
     });
     //Create the HTTPS objects
-    const https = require('https');
     const options = {
       hostname: 'test-payment.momo.vn',
       port: 443,
