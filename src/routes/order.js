@@ -24,6 +24,13 @@ router.get(
   OrderController.getDetailOrder
 );
 
+// Update detail order [ADMIN]
+router.put(
+  "/update-detail-order-client/:id",
+  [authJwt.verifyToken],
+  OrderController.updateOrder
+);
+
 // Delete detail order [CLIENT]
 // router.delete(
 //   "/delete-detail-order/:id",
