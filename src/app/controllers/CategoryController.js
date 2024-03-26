@@ -4,7 +4,8 @@ class CategoryController {
   // [POST]
   async create(req, res, next) {
     try {
-      const categories = new Category(req.body);
+      const { userId, ...rest } = req.body || {}
+      const categories = new Category(rest);
       const result = await categories.save();
       res.json({
         retCode: 0,
@@ -17,7 +18,7 @@ class CategoryController {
   }
 
   // [GET] all items
-  async getAllItems(req, res, next) {
+  async getAllItemsAdmin(req, res, next) {
     try {
       const result = await Category.find().exec()
       res.json({
@@ -26,7 +27,21 @@ class CategoryController {
         retData: result,
       });
     } catch (err) {
-      res.status(500).send(error);
+      res.status(500).send(err);
+    }
+  }
+
+  // [GET] all items
+  async getAllItemsClient(req, res, next) {
+    try {
+      const result = await Category.find({ status: "publish" }).exec()
+      res.json({
+        retCode: 0,
+        retText: "Thành công",
+        retData: result,
+      });
+    } catch (err) {
+      res.status(500).send(err);
     }
   }
 
