@@ -24,11 +24,11 @@ router.get(
   OrderController.getDetailOrder
 );
 
-// Update detail order [ADMIN]
+// Update detail order [CLIENT]
 router.put(
   "/update-detail-order-client/:id",
   [authJwt.verifyToken],
-  OrderController.updateOrder
+  OrderController.updateOrderClient
 );
 
 // Delete detail order [CLIENT]
@@ -63,7 +63,7 @@ router.delete(
 router.put(
   "/update-detail-order-admin/:id",
   [authJwt.isAdmin],
-  OrderController.updateOrder
+  OrderController.updateOrderAdmin
 );
 
 module.exports = router;

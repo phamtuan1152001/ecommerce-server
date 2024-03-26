@@ -21,7 +21,6 @@ class OrderController {
         ...req.body,
         cartDetail: cartDetail
       }
-      // res.send(reqSave)
       const order = new Order(reqSave);
       const result = await order.save();
       res.status(200).json({
@@ -137,8 +136,8 @@ class OrderController {
     }
   }
 
-  // UPDATE ORDER [PUT]
-  async updateOrder(req, res, next) {
+  // UPDATE ORDER Admin [PUT]
+  async updateOrderAdmin(req, res, next) {
     try {
       const { userId, mainUserId, ...rest } = req.body
       const payload = {
@@ -148,6 +147,22 @@ class OrderController {
       // console.log("req", payload);
       const orderDetail = await Order.findById(req.params.id).exec();
       orderDetail.set(payload);
+      const result = await orderDetail.save();
+      res.json({
+        retCode: 0,
+        retText: "Successfully Update Status Order",
+        retData: result,
+      });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
+  // UPDATE ORDER CLIENT [PUT]
+  async updateOrderClient(req, res, next) {
+    try {
+      const orderDetail = await Order.findById(req.params.id).exec();
+      orderDetail.set(req.body);
       const result = await orderDetail.save();
       res.json({
         retCode: 0,
