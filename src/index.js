@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const route = require("./routes");
 const db = require("./config/db");
-let port = process.env.PORT || 3000;
+const scheduler = require("./scheduler")
 // const bodyParser = require("body-parser");
 
 // app.use(bodyParser.json());
@@ -37,6 +37,9 @@ app.use(express.json({ limit: "50mb" }));
 // Routes
 route(app);
 
+// scheduler
+scheduler()
+
 // Catch 404 Errors and forward them to error handler
 app.use((req, res, next) => {
   const err = new Error("Not Found");
@@ -58,10 +61,6 @@ app.use((err, req, res, next) => {
 });
 
 // Set up localhost
-// const port = 3000 || 8080;
-// app.listen(port, () => {
-//   console.log(`App listening at http://localhost:${port}`);
-// });
 app.listen(process.env.PORT || 3002, function () {
   console.log(
     "Express server listening on port %d in %s mode",
