@@ -16,7 +16,7 @@ class UploadController {
 
   async uploadMultiple(req, res, next) {
     try {
-      const filestr = req.body;
+      const filestr = req.body.data;
       // res.json(filestr)
       const logic = filestr?.map(async (item) => {
         const uploadedResponse = await cloudinary.uploader.upload(item);
