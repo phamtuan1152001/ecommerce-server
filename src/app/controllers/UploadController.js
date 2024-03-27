@@ -13,6 +13,22 @@ class UploadController {
       res.status(500).json({ err: "Something went wrong" });
     }
   }
+
+  async uploadMultiple(req, res, next) {
+    try {
+      const filestr = req.body;
+      // res.json(filestr)
+      const logic = filestr?.map(async (item) => {
+        const uploadedResponse = await cloudinary.uploader.upload(item);
+        return { ...uploadedResponse }
+      })
+      const resolvedPromises = await Promise.all(logic);
+      res.json(resolvedPromises);
+    } catch (err) {
+      console.log("FETCH FAIL!", err);
+      res.status(500).json({ err: "Something went wrong" });
+    }
+  }
 }
 
 module.exports = new UploadController();

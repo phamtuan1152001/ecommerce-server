@@ -6,4 +6,6 @@ const UploadController = require("../app/controllers/UploadController");
 
 router.post("/upload-cloudinary", UploadController.upload);
 
+router.post("/upload-cloudinary-multiple", UploadController.uploadMultiple);
+
 module.exports = router;
