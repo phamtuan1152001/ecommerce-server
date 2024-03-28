@@ -6,7 +6,10 @@ const ProductsController = require("../app/controllers/ProductsController");
 
 // Admin
 
-// create products [Admin]
+// create many products [Admin]
+router.post("/create-multiple-products", [authJwt.isAdmin], ProductsController.createMultipleProducts)
+
+// create product [Admin]
 router.post("/create", [authJwt.isAdmin], ProductsController.create);
 
 // post list producst with pagination [Client]

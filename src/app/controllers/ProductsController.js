@@ -1,6 +1,23 @@
 const Product = require("../models/Product");
 
 class ProductsController {
+  // [POST] create multiple products
+  async createMultipleProducts(req, res, next) {
+    try {
+      // const products = new Product(req.body);
+      // const result = await products.save();
+      const result = await Product.insertMany(req.body.listProducts)
+      res.json({
+        retCode: 0,
+        retText: "Create multiple products successfully",
+        retData: result,
+      });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
+
   // [POST]
   async create(req, res, next) {
     try {
