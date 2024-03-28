@@ -18,6 +18,6 @@ router.post("/detail-import/:id", [authJwt.isAdmin], ManageImportController.getD
 router.put("/update-detail-import/:id", [authJwt.isAdmin], ManageImportController.update)
 
 // DELETE DETAIL [DELETE]
-router.delete("/delete-detail-import/:id", [authJwt.isAdmin], ManageImportController.delete)
+router.delete("/delete-detail-import/:id", [authJwt.verifyToken], ManageImportController.delete)
 
 module.exports = router;

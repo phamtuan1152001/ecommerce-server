@@ -14,6 +14,9 @@ const ManageImport = new Schema(
     }],
     description: {
       type: String
+    },
+    defaultImageId: {
+      type: String
     }
   },
   { timestamps: true }
