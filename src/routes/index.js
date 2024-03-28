@@ -12,10 +12,14 @@ const newsRouter = require("./news");
 const dalleRouter = require("./dalle")
 const paymentRouter = require("./payment")
 const rankProductRouter = require("./ranking-products")
+const manageImportRouter = require("./manage-import")
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+  // manage import
+  app.use("/manage-import", manageImportRouter)
+
   // ranking product
   app.use("/ranking-products", rankProductRouter)
 

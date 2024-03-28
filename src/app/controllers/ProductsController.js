@@ -8,7 +8,7 @@ class ProductsController {
       const result = await products.save();
       res.json({
         retCode: 0,
-        retText: "Tạo thành công",
+        retText: "Create successfully",
         retData: result,
       });
     } catch (error) {
@@ -72,7 +72,7 @@ class ProductsController {
       .then((data) => {
         res.json({
           retCode: 0,
-          retText: "",
+          retText: "List of products",
           retData: {
             totalItems: data.totalDocs,
             products: data.docs,
@@ -123,7 +123,7 @@ class ProductsController {
       )
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "Product detail",
         retData: productDetail,
       });
     } catch (error) {
@@ -139,7 +139,7 @@ class ProductsController {
       const result = await productsDetail.save();
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "Update successfully",
         retData: result,
       });
     } catch (error) {
@@ -155,7 +155,7 @@ class ProductsController {
       }).exec();
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "Delete successfully",
         retData: result,
       });
     } catch (error) {
