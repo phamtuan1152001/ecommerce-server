@@ -9,7 +9,7 @@ class CategoryController {
       const result = await categories.save();
       res.json({
         retCode: 0,
-        retText: "Create Successfully",
+        retText: "Create successfully",
         retData: result,
       });
     } catch (error) {
@@ -23,7 +23,7 @@ class CategoryController {
       const result = await Category.find().exec()
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "List category in admin",
         retData: result,
       });
     } catch (err) {
@@ -37,7 +37,7 @@ class CategoryController {
       const result = await Category.find({ status: "publish" }).exec()
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "List category in client",
         retData: result,
       });
     } catch (err) {
@@ -52,7 +52,7 @@ class CategoryController {
       const result = await Category.findById(req.params.id).exec()
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "Detail category",
         retData: result,
       });
     } catch (error) {
@@ -68,7 +68,7 @@ class CategoryController {
       const result = await categoryDetail.save();
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "Update successfully",
         retData: result,
       });
     } catch (error) {
@@ -84,7 +84,7 @@ class CategoryController {
       }).exec();
       res.json({
         retCode: 0,
-        retText: "Thành công",
+        retText: "Delete successfully",
         retData: result,
       });
     } catch (error) {

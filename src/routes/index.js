@@ -13,10 +13,14 @@ const dalleRouter = require("./dalle")
 const paymentRouter = require("./payment")
 const rankProductRouter = require("./ranking-products")
 const manageImportRouter = require("./manage-import")
+const convertRouter = require("./convert")
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+  // convert png to vector file
+  app.use("/convert-to-svg", convertRouter)
+
   // manage import
   app.use("/manage-import", manageImportRouter)
 
