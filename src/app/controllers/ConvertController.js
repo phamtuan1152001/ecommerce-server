@@ -12,7 +12,7 @@ class ConvertControlelr {
           "import-1": {
             "operation": "import/url",
             "url": urlImage,
-            "filename": fileNameImage
+            // "filename": fileNameImage
           },
           "task-1": {
             "operation": "convert",
