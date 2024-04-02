@@ -75,7 +75,13 @@ class CustomizedProductController {
 
     const { limit, offset } = getPagination(page, size);
 
-    CustomizedProduct.paginate(filter, { offset, limit })
+    CustomizedProduct.paginate(filter, {
+      offset,
+      limit,
+      sort: {
+        createdAt: -1
+      },
+    })
       .then((data) => {
         res.json({
           retCode: 0,
@@ -138,6 +144,32 @@ class CustomizedProductController {
       res.json({
         retCode: 0,
         retText: "Delete Successfully",
+        retData: result,
+      });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
+  async getDetailClient(req, res, next) {
+    try {
+      const result = await CustomizedProduct.findById(req.params.id).exec();
+      res.json({
+        retCode: 0,
+        retText: "Detail customized product client",
+        retData: result,
+      });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
+  async getDetailAdmin(req, res, next) {
+    try {
+      const result = await CustomizedProduct.findById(req.params.id).exec();
+      res.json({
+        retCode: 0,
+        retText: "Detail customized product admin",
         retData: result,
       });
     } catch (error) {

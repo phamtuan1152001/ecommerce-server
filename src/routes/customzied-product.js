@@ -6,7 +6,7 @@ const { authJwt } = require("../app/middleware");
 const CustomizedProductController = require("../app/controllers/CustomizedProductController")
 
 // CLIENT
-// CREATE [POST]
+// CREATE CUSTOMIZED PRODUCT CLIENT [POST]
 router.post(
   "/create",
   [authJwt.verifyToken],
@@ -26,6 +26,13 @@ router.post(
   [authJwt.verifyToken],
   CustomizedProductController.getListCustomizedProductClient
 )
+
+// GET DETAIL CUSTOMIZED PRODUCT'S CLIENT [POST]
+router.get(
+  "/detail-customized-product-client/:id",
+  [authJwt.verifyToken],
+  CustomizedProductController.getDetailClient
+)
 // End
 
 // ADMIN
@@ -41,6 +48,13 @@ router.put(
   "/update-customized-product-admin/:id",
   [authJwt.isAdmin],
   CustomizedProductController.updateCustomizedProductAdmin
+)
+
+// GET DETAIL CUSTOMIZED PRODUCT ADMIN
+router.post(
+  "/detail-customized-product-client/:id",
+  [authJwt.isAdmin],
+  CustomizedProductController.getDetailAdmin
 )
 // End
 
