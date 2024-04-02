@@ -14,10 +14,14 @@ const paymentRouter = require("./payment")
 const rankProductRouter = require("./ranking-products")
 const manageImportRouter = require("./manage-import")
 const convertRouter = require("./convert")
+const customizedProductRouter = require("./customzied-product")
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+  // customized product
+  app.use("/customized-product", customizedProductRouter)
+
   // convert png to vector file
   app.use("/convert-to-svg", convertRouter)
 

@@ -5,35 +5,38 @@ const Schema = mongoose.Schema;
 
 const CustomizedProduct = new Schema(
   {
+    userId: {
+      type: String,
+    },
     code: {
       type: String,
     },
     name: {
       type: String
     },
-    status: {
-      type: String
-    },
-    regularPrice: {
+    quantity: {
       type: Number
     },
-    salePrice: {
-      type: Number
-    },
-    onSale: {
-      type: Boolean
-    },
-    dateOnSaleFrom: {
-      type: String
-    },
-    dateOnSaleTo: {
-      type: String
+    size: {
+      type: String,
     },
     imageUrl: {
       type: String
     },
     imagePsd: {
       type: String,
+    },
+    statusProductAdmin: {
+      type: Number, // 0: Chờ Admin duyệt; 1: Duyệt thành công ( cung cấp giá từ bên thiết kế); 2: Không được duyệt
+    },
+    statusProductClient: {
+      type: Number, // 0: Chờ Client duyêt; 1: Client duyệt giá sản phẩm ( bắt đầu tạo Order từ chỗ này ); 2: Client không duyệt giá sản phẩm
+    },
+    regularPrice: {
+      type: Number
+    },
+    totalPrice: {
+      type: Number
     },
   },
   { timestamps: true }
