@@ -37,7 +37,14 @@ class CustomizedProductController {
 
     const { limit, offset } = getPagination(page, size);
 
-    CustomizedProduct.paginate(filter, { offset, limit })
+    CustomizedProduct.paginate(filter,
+      {
+        offset,
+        limit,
+        sort: {
+          createdAt: -1
+        },
+      })
       .then((data) => {
         res.json({
           retCode: 0,
