@@ -15,10 +15,14 @@ const rankProductRouter = require("./ranking-products")
 const manageImportRouter = require("./manage-import")
 const convertRouter = require("./convert")
 const customizedProductRouter = require("./customzied-product")
+const orderCustomizedProductRouter = require("./order-customized-product")
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+  // order customized product
+  app.use("/order-customized-product", orderCustomizedProductRouter)
+
   // customized product
   app.use("/customized-product", customizedProductRouter)
 
