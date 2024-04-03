@@ -229,6 +229,7 @@ class AuthController {
                 statusActive: user.statusActive,
                 roles: authorities,
                 accessToken: token,
+                email: user.email
               },
             });
           }
