@@ -1,6 +1,19 @@
 const OrderCustomizedProduct = require("../models/OrderCustomizedProduct");
 
 class OrderCustomizedProductController {
+  async deleteMany(req, res, next) {
+    try {
+      const result = await OrderCustomizedProduct.deleteMany()
+      res.json({
+        retCode: 0,
+        retText: "Delete many successfully",
+        retData: result
+      })
+    } catch (err) {
+      console.log("FETCHING FAIL!", err)
+    }
+  }
+
   /* ----------- CLIENT ----------- */
   async create(req, res, next) {
     try {

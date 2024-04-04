@@ -5,6 +5,12 @@ const { authJwt } = require("../app/middleware");
 
 const OrderCustomizedProductController = require("../app/controllers/OrderCustomizedProductController")
 
+// COMMON
+router.post(
+  "/delete-many-order-customized-products",
+  OrderCustomizedProductController.deleteMany
+)
+
 /* ----------- CLIENT ----------- */
 // CREATE CLIENT [POST]
 router.post(

@@ -12,4 +12,10 @@ router.post(
   PaymentController.createPaymentMomo
 )
 
+router.post(
+  "/momo-payment-order-customized-product",
+  [authJwt.verifyToken],
+  PaymentController.createPaymentMomoOrderCustomizedProduct
+)
+
 module.exports = router;
