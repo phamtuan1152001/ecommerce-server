@@ -183,6 +183,22 @@ class CustomizedProductController {
       res.status(500).send(error);
     }
   }
+
+  async updateStatusOrderCustomizedProduct(req, res, next) {
+    try {
+      const result = await CustomizedProduct.updateOne(
+        { "code": req.body.code, },
+        { $set: { "statusOrder": true } }
+      )
+      res.json({
+        retCode: 0,
+        retText: "Update status order of customized product successfully",
+        retData: result
+      })
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
 }
 
 module.exports = new CustomizedProductController()

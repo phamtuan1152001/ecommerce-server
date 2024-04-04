@@ -38,6 +38,9 @@ const CustomizedProduct = new Schema(
     totalPrice: {
       type: Number
     },
+    statusOrder: {
+      type: Boolean
+    }
   },
   { timestamps: true }
 );

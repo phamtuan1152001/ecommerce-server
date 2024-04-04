@@ -13,6 +13,13 @@ router.post(
   CustomizedProductController.create
 )
 
+// UPDATE STATUS ORDER OF CUSTOMIZED PRODUCT
+router.put(
+  "/update-status-order",
+  [authJwt.verifyToken],
+  CustomizedProductController.updateStatusOrderCustomizedProduct
+)
+
 // UPDATE DETAIL CUSTOMIZED PRODUCT CLIENT
 router.put(
   "/update-customized-product-client/:id",
