@@ -67,6 +67,9 @@ class OrderController {
     Order.paginate(filter, {
       offset,
       limit,
+      sort: {
+        createdAt: -1
+      },
       populate: [
         {
           path: "cartDetail",
@@ -199,6 +202,9 @@ class OrderController {
     Order.paginate(filter, {
       offset,
       limit,
+      sort: {
+        createdAt: -1
+      },
       populate: [
         // {
         //   path: "cartDetail"
