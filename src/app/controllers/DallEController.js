@@ -1,5 +1,7 @@
-const { OpenAI } = require("openai");
-// import * as dotenv from "dotenv"
+const { OpenAI, toFile } = require("openai");
+
+const fs = require('fs');
+
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // This is the default and can be omitted
@@ -30,6 +32,34 @@ class DallEController {
         retText: "Generate unsuccessfully",
         message: "Something went wrong"
       })
+    }
+  }
+
+  async generateImageUploaded(req, res, next) {
+    try {
+      if (!req.file) {
+        return res.status(400).send({ success: false, error: 'No file uploaded' });
+      }
+
+      const payload = {
+        model: "dall-e-2",
+        image: fs.createReadStream(`/Projects/ThesisProject/ThesisProject/thesis/server-ecom/ecommerce-server/src/public`),
+        // mask: imageBuffer,
+        prompt: "a tree",
+        n: 1,
+        size: "256x256",
+        response_format: "url"
+      }
+      // console.log("p", payload);
+      const response = await openai.images.edit(payload)
+      console.log("response", response);
+    } catch (error) {
+      if (error.response) {
+        console.log("status", error.response.status);
+        console.log("data", error.response.data);
+      } else {
+        console.log("message", error.message);
+      }
     }
   }
 }
