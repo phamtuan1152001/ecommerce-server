@@ -165,7 +165,7 @@ class RankProductsController {
 
     if (dateStart || dateEnd) {
       Object.assign(filter, {
-        createdAt: {
+        updatedAt: {
           $gte: new Date(dateStart),
           $lte: new Date(dateEnd)
         }
