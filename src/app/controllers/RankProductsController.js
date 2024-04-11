@@ -132,7 +132,9 @@ class RankProductsController {
     const {
       page,
       size,
-      action
+      action,
+      dateStart,
+      dateEnd
     } = req.body;
 
     const filter = {};
@@ -159,6 +161,15 @@ class RankProductsController {
         default:
           break;
       }
+    }
+
+    if (dateStart || dateEnd) {
+      Object.assign(filter, {
+        createdAt: {
+          $gte: new Date(dateStart),
+          $lte: new Date(dateEnd)
+        }
+      });
     }
 
     const { limit, offset } = getPagination(page, size);
