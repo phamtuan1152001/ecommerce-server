@@ -74,101 +74,98 @@ class AuthController {
       })
       return
     } else {
-      User.findOne({
-        username: req.body.username,
-      }).exec((err, user) => {
+      const { username, password, fullName, phone, statusActive, email } =
+        req.body || {};
+      const codeActive = Math.floor(Math.random() * 900000) + 100000;
+
+      var refreshToken = jwt.sign(
+        {
+          username,
+          password
+        },
+        config.refreshTokenSecret,
+        {
+          expiresIn: 2629440, // 1 month
+        }
+      );
+
+      const userSave = new User({
+        username: username,
+        password: bcrypt.hashSync(password, 8),
+        fullName,
+        phone,
+        email,
+        codeActive,
+        statusActive, // 0 is not active, 1 is active
+        refreshToken
+      });
+
+      userSave.save((err, user) => {
         if (err) {
           res.status(500).send({ message: err });
           return;
         }
 
-        if (user) {
-          return;
-        } else {
-          const { username, password, fullName, phone, address, statusActive, email } =
-            req.body || {};
-          const codeActive = Math.floor(Math.random() * 900000) + 100000;
+        if (req.body.roles) {
+          Role.find(
+            {
+              name: { $in: req.body.roles },
+            },
+            (err, roles) => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
 
-          const user = new User({
-            username: username,
-            password: bcrypt.hashSync(password, 8),
-            fullName,
-            phone,
-            address,
-            email,
-            codeActive,
-            statusActive, // 0 is not active, 1 is active
-          });
-
-          user.save((err, user) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-
-            if (req.body.roles) {
-              Role.find(
-                {
-                  name: { $in: req.body.roles },
-                },
-                (err, roles) => {
-                  if (err) {
-                    res.status(500).send({ message: err });
-                    return;
-                  }
-
-                  user.roles = roles.map((role) => role._id);
-                  user.save((err) => {
-                    if (err) {
-                      res.status(500).send({ message: err });
-                      return;
-                    }
-
-                    // Send email
-                    /* sendEmailActive(codeActive, email); */
-
-                    res.send({
-                      retCode: 0,
-                      retText: "User was registered successfully!",
-                      retData: {
-                        userId: user._id,
-                      },
-                    });
-                  });
-                }
-              );
-            } else {
-              Role.findOne({ name: "user" }, (err, role) => {
+              user.roles = roles.map((role) => role._id);
+              user.save((err) => {
                 if (err) {
                   res.status(500).send({ message: err });
                   return;
                 }
 
-                user.roles = [role._id];
-                user.save((err) => {
-                  if (err) {
-                    res.status(500).send({ message: err });
-                    return;
-                  }
+                // Send email
+                /* sendEmailActive(codeActive, email); */
 
-                  // Send email
-                  sendEmailActive(codeActive, username);
-
-                  res.send({
-                    retCode: 0,
-                    retText: "User was registered successfully!",
-                    retData: {
-                      userId: user._id,
-                    },
-                  });
+                res.send({
+                  retCode: 0,
+                  retText: "User was registered successfully!",
+                  retData: {
+                    userId: user._id,
+                  },
                 });
               });
             }
+          );
+        } else {
+          Role.findOne({ name: "user" }, (err, role) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            user.roles = [role._id];
+            user.save((err) => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+
+              // Send email
+              // sendEmailActive(codeActive, username);
+
+              res.send({
+                retCode: 0,
+                retText: "User was registered successfully!",
+                retData: {
+                  userId: user._id,
+                },
+              });
+            });
           });
         }
       });
     }
-
   }
 
   signin(req, res, next) {
@@ -208,8 +205,9 @@ class AuthController {
               });
             }
 
-            var token = jwt.sign({ id: user.id }, config.secret, {
-              // expiresIn: 86400, // 24 hours // không càn set time expired cho token
+            var accessToken = jwt.sign({ id: user.id }, config.accessTokenSecret, {
+              // expiresIn: 86400, // 24 hours
+              expiresIn: /* 300 */ 1800, // 30 mins
             });
 
             var authorities = [];
@@ -217,6 +215,11 @@ class AuthController {
             for (let i = 0; i < user.roles.length; i++) {
               authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
             }
+
+            /* Assignning cookie */
+            // res.cookie('accessToken', accessToken, { httpOnly: true });
+            /*  */
+
             res.status(200).send({
               retCode: 0,
               retText: "Login successfully!",
@@ -224,12 +227,12 @@ class AuthController {
                 id: user._id,
                 username: user.username,
                 fullName: user.fullName,
+                email: user.email,
                 phone: user.phone,
-                address: user.address,
+                accessToken: accessToken,
+                refreshToken: user.refreshToken,
                 statusActive: user.statusActive,
                 roles: authorities,
-                accessToken: token,
-                email: user.email
               },
             });
           }

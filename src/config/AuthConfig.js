@@ -1,3 +1,4 @@
 module.exports = {
-  secret: "ecommerce-dev-secret-key",
+  accessTokenSecret: "access-token-secret-key",
+  refreshTokenSecret: "refresh-token-secret-key",
 };

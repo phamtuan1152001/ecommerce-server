@@ -18,4 +18,14 @@ router.post("/signin", AuthController.signin);
 
 router.post("/confirmCode", AuthController.confirmActiveCode);
 
+router.get('/logout', (req, res) => {
+  // Clear token cookie
+  res.clearCookie('token');
+  res.json({
+    retCode: 0,
+    retData: {},
+    retText: 'Logout successful'
+  });
+});
+
 module.exports = router;

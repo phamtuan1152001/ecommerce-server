@@ -5,6 +5,9 @@ const cors = require("cors");
 const route = require("./routes");
 const db = require("./config/db");
 const scheduler = require("./scheduler")
+
+// const cookieParser = require('cookie-parser');
+// app.use(cookieParser());
 // const bodyParser = require("body-parser");
 
 // app.use(bodyParser.json());
@@ -17,6 +20,8 @@ db.connect();
 app.use(
   cors({
     origin: "*",
+    // origin: 'http://localhost:5173',
+    // credentials: true
   })
 );
 

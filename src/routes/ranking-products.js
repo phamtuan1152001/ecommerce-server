@@ -11,4 +11,11 @@ router.post("/create", RankProductsController.create);
 // [CLIENT] post
 router.post("/get-list-client", RankProductsController.listRankProducts)
 
+// [ADMIN] post
+router.post(
+  "/get-list-admin",
+  [authJwt.isAdminToken],
+  RankProductsController.listRankProducts
+)
+
 module.exports = router;
