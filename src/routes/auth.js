@@ -28,4 +28,8 @@ router.get('/logout', (req, res) => {
   });
 });
 
+router.post("/verify-token", AuthController.verifyAccessToken)
+
+router.post("/generate-token", AuthController.generateAccessToken)
+
 module.exports = router;

@@ -78,17 +78,6 @@ class AuthController {
         req.body || {};
       const codeActive = Math.floor(Math.random() * 900000) + 100000;
 
-      var refreshToken = jwt.sign(
-        {
-          username,
-          password
-        },
-        config.refreshTokenSecret,
-        {
-          expiresIn: 2629440, // 1 month
-        }
-      );
-
       const userSave = new User({
         username: username,
         password: bcrypt.hashSync(password, 8),
@@ -97,7 +86,7 @@ class AuthController {
         email,
         codeActive,
         statusActive, // 0 is not active, 1 is active
-        refreshToken
+        refreshToken: ""
       });
 
       userSave.save((err, user) => {
@@ -210,31 +199,58 @@ class AuthController {
               expiresIn: /* 300 */ 1800, // 30 mins
             });
 
-            var authorities = [];
+            var refreshToken = jwt.sign(
+              { id: user.id },
+              config.refreshTokenSecret,
+              {
+                expiresIn: 2629440, // 1 month
+              }
+            );
 
-            for (let i = 0; i < user.roles.length; i++) {
-              authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-            }
-
-            /* Assignning cookie */
-            // res.cookie('accessToken', accessToken, { httpOnly: true });
-            /*  */
-
-            res.status(200).send({
-              retCode: 0,
-              retText: "Login successfully!",
-              retData: {
-                id: user._id,
-                username: user.username,
-                fullName: user.fullName,
-                email: user.email,
-                phone: user.phone,
-                accessToken: accessToken,
-                refreshToken: user.refreshToken,
-                statusActive: user.statusActive,
-                roles: authorities,
+            /* Update refresh token of user in db */
+            User.updateOne(
+              {
+                _id: user.id
               },
-            });
+              {
+                $set: {
+                  "refreshToken": refreshToken
+                }
+              }
+            ).exec((err, result) => {
+              if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+
+              // console.log("re", result)
+              var authorities = [];
+
+              for (let i = 0; i < user.roles.length; i++) {
+                authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+              }
+
+              /* Assignning cookie */
+              // res.cookie('accessToken', accessToken, { httpOnly: true });
+              /*  */
+
+              res.status(200).send({
+                retCode: 0,
+                retText: "Login successfully!",
+                retData: {
+                  id: user._id,
+                  username: user.username,
+                  fullName: user.fullName,
+                  email: user.email,
+                  phone: user.phone,
+                  accessToken: accessToken,
+                  refreshToken: refreshToken,
+                  statusActive: user.statusActive,
+                  roles: authorities,
+                },
+              });
+            })
+            /*  */
           }
         }
       });
@@ -285,6 +301,138 @@ class AuthController {
     //     }
     //   }
     // });
+  }
+
+  verifyAccessToken(req, res, next) {
+    const token = req.body.accessToken
+    if (!token) {
+      return res.status(402).send({
+        retCode: 1,
+        retText: "No access token provided",
+        retData: {}
+      });
+    } else {
+      jwt.verify(token, config.accessTokenSecret, (err, decoded) => {
+        if (err) {
+          return res.status(401).send({
+            retCode: 1,
+            retText: "Access token is expired",
+            retData: {}
+          });
+        }
+        User.findOne({
+          _id: decoded.id
+        }).populate("roles", "-__v")
+          .exec((err, user) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            const { password, ...rest } = user || {}
+
+            var authorities = [];
+
+            for (let i = 0; i < user.roles.length; i++) {
+              authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+            }
+
+            res.json({
+              retCode: 0,
+              retText: "Confirm verify",
+              retData: {
+                id: user._id,
+                username: user.username,
+                fullName: user.fullName,
+                email: user.email,
+                phone: user.phone,
+                accessToken: token,
+                refreshToken: user.refreshToken,
+                statusActive: user.statusActive,
+                roles: authorities,
+              }
+            })
+          })
+      });
+    }
+  }
+
+  generateAccessToken(req, res, next) {
+    const refreshToken = req.body.refreshToken
+    jwt.verify(refreshToken, config.refreshTokenSecret, (err, decoded) => {
+
+      if (err) {
+        return res.status(401).send({
+          retCode: 1,
+          retText: "Refresh token is expired",
+          retData: {}
+        });
+      }
+      // console.log("dec", decoded)
+
+      var accessToken = jwt.sign({ id: decoded.id }, config.accessTokenSecret, {
+        // expiresIn: 86400, // 24 hours
+        expiresIn: /* 300 */ 1800, // 30 mins
+      });
+
+      var refreshToken = jwt.sign(
+        { id: decoded.id },
+        config.refreshTokenSecret,
+        {
+          expiresIn: 2629440, // 1 month
+        }
+      );
+
+      User.updateOne(
+        {
+          _id: decoded.id
+        },
+        {
+          $set: {
+            "refreshToken": refreshToken
+          }
+        }
+      ).exec(async (err, result) => {
+
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        User.findById(decoded.id)
+          .populate("roles", "-__v")
+          .exec((errUser, resultUser) => {
+            if (errUser) {
+              res.status(500).send({ message: "User not found" });
+              return;
+            }
+            // console.log("resultUser", resultUser)
+            const user = resultUser
+
+            var authorities = [];
+
+            for (let i = 0; i < user.roles.length; i++) {
+              authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+            }
+
+            res.status(200).send({
+              retCode: 0,
+              retText: "Generate access token successfully!",
+              retData: {
+                id: user._id,
+                username: user.username,
+                fullName: user.fullName,
+                email: user.email,
+                phone: user.phone,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                statusActive: user.statusActive,
+                roles: authorities,
+              },
+            });
+          })
+      })
+    })
   }
 }
 
