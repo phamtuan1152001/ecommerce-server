@@ -16,11 +16,15 @@ const manageImportRouter = require("./manage-import")
 const convertRouter = require("./convert")
 const customizedProductRouter = require("./customzied-product")
 const orderCustomizedProductRouter = require("./order-customized-product")
-const imageProcessRouter = require("./image-process")
+const trackingVisistors = require("./visistor")
+// const imageProcessRouter = require("./image-process")
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+
+  // Tracking visitor users
+  app.use("/tracking", trackingVisistors)
 
   // Generating image by upload image
   // app.use("/image-processing", imageProcessRouter)
