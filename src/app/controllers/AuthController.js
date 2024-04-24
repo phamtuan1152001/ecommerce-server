@@ -196,7 +196,7 @@ class AuthController {
 
             var accessToken = jwt.sign({ id: user.id }, config.accessTokenSecret, {
               // expiresIn: 86400, // 24 hours
-              expiresIn: /* 300 */ 1800, // 30 mins
+              expiresIn: /* 300 */ /* 1800 */ 86400, // 30 mins - 1hours
             });
 
             var refreshToken = jwt.sign(
