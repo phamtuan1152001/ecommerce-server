@@ -66,4 +66,11 @@ router.put(
   OrderController.updateOrderAdmin
 );
 
+// Get all order for dashboard [ADMIN]
+router.post(
+  "/get-all",
+  [authJwt.isAdminToken],
+  OrderController.getAllOrderProducts
+)
+
 module.exports = router;

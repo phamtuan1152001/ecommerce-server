@@ -4,6 +4,40 @@ const Product = require("../models/Product");
 const User = require("../models/User");
 
 class OrderController {
+
+  // GET ALL [ADMIN]
+  async getAllOrderProducts(req, res, next) {
+    const { dateStart, dateEnd, ...rest } = req.body || {}
+
+    const filter = {
+      createdAt: {
+        $gte: new Date(dateStart),
+        $lte: new Date(dateEnd)
+      }
+    };
+
+    Order
+      .find(filter, {})
+      .populate([
+        {
+          path: "cartDetail",
+          populate: {
+            path: "items.product", // Assuming "product" is the field referencing the product model
+            // select: "code name" // Adjust fields as needed
+          }
+        }
+      ])
+      .exec((err, data) => {
+        res.json({
+          retCode: 0,
+          retText: "List order",
+          retData: {
+            orders: data
+          }
+        })
+      })
+  }
+
   // Create Order Client [POST]
   async createOrder(req, res, next) {
     // statusOrder: gom 3 trang thai: 0 la cho thanh toan, 1 la thanh toan thanh cong, 2 la huy giao dich

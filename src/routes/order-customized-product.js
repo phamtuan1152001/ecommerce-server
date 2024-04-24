@@ -69,4 +69,11 @@ router.delete(
   OrderCustomizedProductController.deleteDetailOrderCustomizedProduct
 )
 
+// GET ALL ORDER FOR DASHBOARD
+router.post(
+  "/get-all",
+  [authJwt.isAdminToken],
+  OrderCustomizedProductController.getAllOrderCustomizedProducts
+)
+
 module.exports = router

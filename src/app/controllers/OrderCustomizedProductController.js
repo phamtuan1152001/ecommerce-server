@@ -14,6 +14,34 @@ class OrderCustomizedProductController {
     }
   }
 
+  async getAllOrderCustomizedProducts(req, res, next) {
+    const { dateStart, dateEnd, ...rest } = req.body || {}
+
+    const filter = {
+      createdAt: {
+        $gte: new Date(dateStart),
+        $lte: new Date(dateEnd)
+      }
+    };
+
+    OrderCustomizedProduct
+      .find(filter, {})
+      .populate([
+        {
+          path: "customizedProduct",
+        }
+      ])
+      .exec((err, data) => {
+        res.json({
+          retCode: 0,
+          retText: "List all order for dashboard",
+          retData: {
+            ordersCustomizedProduct: data
+          }
+        })
+      })
+  }
+
   /* ----------- CLIENT ----------- */
   async create(req, res, next) {
     try {
