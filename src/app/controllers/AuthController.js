@@ -114,7 +114,7 @@ class AuthController {
                 }
 
                 // Send email
-                /* sendEmailActive(codeActive, email); */
+                sendEmailActive(codeActive, email);
 
                 res.send({
                   retCode: 0,
@@ -158,6 +158,46 @@ class AuthController {
   }
 
   signin(req, res, next) {
+    const sendEmailActive = (code, userMail) => {
+      // console.log("code", code);
+      var transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: USER_NAME_GMAIL,
+          pass: APP_PASSWORD_HARD_CODE,
+        },
+      });
+
+      var mailOptions = {
+        from: "petshopecommerce301@gmail.com",
+        to: userMail,
+        subject: "Code Active Account",
+        text: `Your code active account is ${code}`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log("error", error);
+          // res.send({
+          //   retCode: 0,
+          //   retText: "Send email unsuccessfully!",
+          //   retData: null,
+          // });
+          return;
+        } else {
+          // res.send({
+          //   retCode: 0,
+          //   retText: "Send email successfully!",
+          //   retData: null,
+          // });
+          // console.log("info", info);
+          return;
+        }
+      });
+    };
+
     User.findOne({
       username: req.body.username,
     })
@@ -176,10 +216,14 @@ class AuthController {
           });
         } else {
           if (user.statusActive === 0) {
+            sendEmailActive(user.codeActive, user.email);
             res.json({
               retCode: 1,
               retText: "Account is not actived",
-              retData: null,
+              retData: {
+                email: user.email,
+                userId: user._id
+              },
             });
           } else {
             var passwordIsValid = bcrypt.compareSync(
@@ -190,7 +234,7 @@ class AuthController {
             if (!passwordIsValid) {
               return res.status(401).send({
                 accessToken: null,
-                message: "Invalid Password!",
+                retText: "Invalid Password!",
               });
             }
 
