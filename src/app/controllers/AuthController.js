@@ -478,6 +478,119 @@ class AuthController {
       })
     })
   }
+
+  sendCodeResetPassword(req, res, next) {
+    const sendEmailActive = (code, userMail) => {
+      // console.log("code", code);
+      var transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: USER_NAME_GMAIL,
+          pass: APP_PASSWORD_HARD_CODE,
+        },
+      });
+
+      var mailOptions = {
+        from: "petshopecommerce301@gmail.com",
+        to: userMail,
+        subject: "Code Active Account",
+        text: `Your code active account is ${code}`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log("error", error);
+          // res.send({
+          //   retCode: 0,
+          //   retText: "Send email unsuccessfully!",
+          //   retData: null,
+          // });
+          return;
+        } else {
+          // res.send({
+          //   retCode: 0,
+          //   retText: "Send email successfully!",
+          //   retData: null,
+          // });
+          // console.log("info", info);
+          return;
+        }
+      });
+    };
+
+    const { email } = req.body || {}
+    const codeActive = Math.floor(Math.random() * 900000) + 100000;
+
+    const generateCode = () => {
+      return Math.floor(Math.random() * 900000) + 100000
+    }
+
+    User.findOne({ email: email }).exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      // console.log("codeActive", codeActive)
+
+      User.updateOne(
+        { "_id": user._id },
+        {
+          $set: {
+            "codeActive": codeActive === user.codeActive ? generateCode() : codeActive
+          }
+        }
+      ).exec((error, update) => {
+        if (error) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        sendEmailActive(codeActive === user.codeActive ? generateCode() : codeActive, email)
+        res.json({
+          retCode: 0,
+          retText: "Send code for reset password successfully",
+          retData: {
+            userId: user._id,
+          }
+        })
+      })
+    })
+
+  }
+
+  resetPassword(req, res, next) {
+    const { userId, code, newPassword } = req.body || {}
+
+    User.findOne({ "_id": userId }).exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+
+      if (user.codeActive === code) {
+        User.updateOne(
+          { "_id": userId },
+          {
+            $set: {
+              "password": bcrypt.hashSync(newPassword, 8)
+            }
+          }
+        ).exec((error, password) => {
+          if (error) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          res.json({
+            retCode: 0,
+            retText: "Reset password successfully!",
+            retData: password
+          })
+        })
+      }
+    })
+  }
 }
 
 module.exports = new AuthController();

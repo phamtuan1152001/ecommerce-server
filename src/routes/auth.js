@@ -32,4 +32,8 @@ router.post("/verify-token", AuthController.verifyAccessToken)
 
 router.post("/generate-token", AuthController.generateAccessToken)
 
+router.post("/send-code-forgotpassword", AuthController.sendCodeResetPassword)
+
+router.post("/reset-password", AuthController.resetPassword)
+
 module.exports = router;
