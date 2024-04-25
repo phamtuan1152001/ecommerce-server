@@ -75,9 +75,15 @@ class OrderController {
 
       return { limit, offset };
     };
-    const { page, size, orderText, dateStart, dateEnd } = req.body;
+    const { page, size, orderText, dateStart, dateEnd, codeOrder } = req.body;
 
     const filter = {};
+
+    if (codeOrder) {
+      Object.assign(filter, {
+        _id: codeOrder
+      })
+    }
 
     if (dateStart || dateEnd) {
       Object.assign(filter, {
