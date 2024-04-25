@@ -602,6 +602,42 @@ class AuthController {
       }
     })
   }
+
+  deleteCodeActive(req, res, next) {
+    const { userId } = req.body || {}
+
+    User.findOne({ "_id": userId }).exec((err, user) => {
+      if (!user) {
+        res.status(400).send({
+          retCode: 1,
+          retText: "User not found",
+          retData: null
+        });
+        return;
+      }
+
+      // res.json(user)
+      User.updateOne(
+        { "_id": user._id },
+        {
+          $set: {
+            "codeActive": 0
+          }
+        }
+      ).exec((err, update) => {
+        if (err) {
+          res.status(500).json({ message: err })
+          return
+        }
+
+        res.json({
+          retCode: 0,
+          retText: "Delete code active successfully",
+          retData: null
+        })
+      })
+    })
+  }
 }
 
 module.exports = new AuthController();

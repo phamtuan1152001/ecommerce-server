@@ -36,4 +36,6 @@ router.post("/send-code", AuthController.sendCode)
 
 router.post("/reset-password", AuthController.resetPassword)
 
+router.post("/delete-code", AuthController.deleteCodeActive)
+
 module.exports = router;
