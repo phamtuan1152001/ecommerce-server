@@ -6,6 +6,34 @@ const route = require("./routes");
 const db = require("./config/db");
 const scheduler = require("./scheduler")
 
+/*  */
+const http = require("http");
+const server = http.createServer(app);
+const socketIo = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  }
+});
+socketIo.on("connection", (socket) => { ///Handle khi có connect từ client tới
+  console.log("New client connected " + socket.id);
+
+  // socket.emit("admin", { message: "Hello admin" })
+
+  socket.on('createOrder', (data) => {
+    console.log('Create order successfully:', data);
+
+    // You can respond back to the client if needed
+    // socket.emit('notification', "Hello admin create order");
+    socketIo.emit('notification', data)
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    // Khi client disconnect thì log ra terminal.
+  });
+});
+/*  */
+
 // const cookieParser = require('cookie-parser');
 // app.use(cookieParser());
 // const bodyParser = require("body-parser");
@@ -66,7 +94,7 @@ app.use((err, req, res, next) => {
 });
 
 // Set up localhost
-app.listen(process.env.PORT || 3002, function () {
+server.listen(process.env.PORT || 3002, function () {
   console.log(
     "Express server listening on port %d in %s mode",
     this.address().port,
