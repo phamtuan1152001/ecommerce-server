@@ -32,7 +32,7 @@ router.post("/verify-token", AuthController.verifyAccessToken)
 
 router.post("/generate-token", AuthController.generateAccessToken)
 
-router.post("/send-code-forgotpassword", AuthController.sendCodeResetPassword)
+router.post("/send-code", AuthController.sendCode)
 
 router.post("/reset-password", AuthController.resetPassword)
 

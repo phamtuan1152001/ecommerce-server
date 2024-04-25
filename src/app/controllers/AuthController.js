@@ -479,7 +479,7 @@ class AuthController {
     })
   }
 
-  sendCodeResetPassword(req, res, next) {
+  sendCode(req, res, next) {
     const sendEmailActive = (code, userMail) => {
       // console.log("code", code);
       var transporter = nodemailer.createTransport({
@@ -528,8 +528,12 @@ class AuthController {
     }
 
     User.findOne({ email: email }).exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
+      if (!user) {
+        res.status(400).send({
+          retCode: 1,
+          retText: "User not found",
+          retData: null
+        });
         return;
       }
       // console.log("codeActive", codeActive)
@@ -563,8 +567,12 @@ class AuthController {
     const { userId, code, newPassword } = req.body || {}
 
     User.findOne({ "_id": userId }).exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
+      if (!user) {
+        res.status(400).send({
+          retCode: 1,
+          retText: "User not found",
+          retData: null
+        });
         return;
       }
 
@@ -588,6 +596,9 @@ class AuthController {
             retData: password
           })
         })
+      } else {
+        res.status(400).send({ message: "Code active is not correct!" });
+        return;
       }
     })
   }
