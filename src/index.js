@@ -14,16 +14,12 @@ const socketIo = require("socket.io")(server, {
     origin: "*",
   }
 });
-socketIo.on("connection", (socket) => { ///Handle khi có connect từ client tới
-  console.log("New client connected " + socket.id);
 
-  // socket.emit("admin", { message: "Hello admin" })
+///Handle khi có connect từ client tới
+socketIo.on("connection", (socket) => {
+  // console.log("New client connected " + socket.id);
 
   socket.on('createOrder', (data) => {
-    console.log('Create order successfully:', data);
-
-    // You can respond back to the client if needed
-    // socket.emit('notification', "Hello admin create order");
     socketIo.emit('notification', data)
   });
 
