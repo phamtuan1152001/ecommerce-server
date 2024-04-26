@@ -17,6 +17,11 @@ router.post(
   [authJwt.isAdminToken],
   NotificationController.getListNotificationAdmin
 )
+router.put(
+  "/update-notification-status",
+  [authJwt.isAdminToken],
+  NotificationController.updateStatusSeenNoti
+)
 /* END */
 
 module.exports = router;

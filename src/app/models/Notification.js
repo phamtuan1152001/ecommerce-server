@@ -27,7 +27,7 @@ const Notification = new Schema(
     typePayment: {
       type: Number // 0 - pending (moi tao don hang), 1 - (thanh toan don hang thanh cong), 2 - (huy thanh toan don hang)
     },
-    idOder: {
+    idOrder: {
       type: String
     }
   },
