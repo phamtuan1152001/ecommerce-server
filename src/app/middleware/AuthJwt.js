@@ -70,6 +70,16 @@ isAdminToken = (req, res, next) => {
           });
           return;
         }
+
+        if (!user) {
+          res.status(403).json({
+            retCode: 3,
+            retText: "Forbidden",
+            retData: null
+          })
+          return
+        }
+
         Role.find(
           {
             _id: { $in: user.roles },

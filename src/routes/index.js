@@ -17,11 +17,15 @@ const convertRouter = require("./convert")
 const customizedProductRouter = require("./customzied-product")
 const orderCustomizedProductRouter = require("./order-customized-product")
 const trackingVisistors = require("./visistor")
+const notificationRouter = require("./notification")
 // const imageProcessRouter = require("./image-process")
 // "start": "nodemon --inspect src/index.js",
 // "start": "node src/index.js",
 
 function route(app) {
+
+  // Notification
+  app.use("/notification", notificationRouter)
 
   // Tracking visitor users
   app.use("/tracking", trackingVisistors)
