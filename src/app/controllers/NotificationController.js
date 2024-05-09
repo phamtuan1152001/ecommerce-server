@@ -120,6 +120,33 @@ class NotificationController {
         });
       });
   }
+
+  updateStatusSeenNotiClient(req, res, next) {
+    const { notificationId } = req.body || {}
+    Notification.updateOne(
+      { "_id": notificationId },
+      {
+        $set: {
+          status: "seen"
+        }
+      }
+    ).exec((err, update) => {
+      if (err) {
+        res.status(500).json({
+          retCode: 2,
+          retText: err.message,
+          retData: null
+        })
+        return
+      }
+
+      res.json({
+        retCode: 0,
+        retText: "Update status notification successfully in client",
+        retData: update
+      })
+    })
+  }
   /* End */
 
   /* ADMIN */
