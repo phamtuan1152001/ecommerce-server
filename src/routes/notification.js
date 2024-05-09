@@ -9,6 +9,11 @@ router.post(
   [authJwt.verifyToken],
   NotificationController.createClient
 )
+router.post(
+  "/get-notifications-client",
+  [authJwt.verifyToken],
+  NotificationController.getListNotificationClient
+)
 /* END */
 
 /* ADMIN */
@@ -21,6 +26,11 @@ router.put(
   "/update-notification-status",
   [authJwt.isAdminToken],
   NotificationController.updateStatusSeenNoti
+)
+router.post(
+  "/send-noti-client",
+  [authJwt.isAdminToken],
+  NotificationController.createAdmin
 )
 /* END */
 

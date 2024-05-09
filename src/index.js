@@ -23,6 +23,11 @@ socketIo.on("connection", (socket) => {
     socketIo.emit('notification', data)
   });
 
+  socket.on('updateStatusOrderClient', (data) => {
+    socketIo.emit('getNewNotificationsInClient', data)
+    // console.log("data", data)
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     // Khi client disconnect thì log ra terminal.

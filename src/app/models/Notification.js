@@ -29,6 +29,9 @@ const Notification = new Schema(
     },
     idOrder: {
       type: String
+    },
+    userType: {
+      type: String // admin or client
     }
   },
   { timestamps: true }
