@@ -4,6 +4,52 @@ const common = require("../../utils/common")
 
 class NotificationController {
   /* CLIENT */
+  async pushNotiToAdminCustomizedProduct(req, res, next) {
+    const { userId, code } = req.body || {}
+    User.findOne({ "_id": userId }).exec(async (err, user) => {
+      if (!user) {
+        res.status(404).json({
+          retCode: 1,
+          retText: "User not found",
+          retData: null
+        });
+        return
+      }
+
+      if (err) {
+        res.status(500).json({
+          retCode: 2,
+          retText: err.message,
+          retData: null
+        })
+        return
+      }
+
+      const payload = {
+        title: `Customer ${user.fullName} has just created a Customized Product!`,
+        description: `Code: ${code}`,
+        userId,
+        status: "not-seen",
+        typeOrder: 3,
+        typePayment: 3,
+        idOrder: "",
+        userType: "admin"
+      }
+
+      try {
+        const notification = new Notification(payload);
+        const result = await notification.save();
+        res.json({
+          retCode: 0,
+          retText: "Push notification for customized product to admin successfully",
+          retData: result,
+        });
+      } catch (error) {
+        res.status(500).send(error);
+      }
+    })
+  }
+
   async createClient(req, res, next) {
     const { userId, typeOrder, idOrder, typePayment } = req.body || {}
     User.findOne({ "_id": userId }).exec(async (err, user) => {
@@ -150,6 +196,74 @@ class NotificationController {
   /* End */
 
   /* ADMIN */
+  async pushNotiToClientCustomizedProductForConfirm(req, res, next) {
+    const { userId, mainUserId, code, typeConfirm } = req.body || {}
+    User.findOne({ "_id": mainUserId }).exec(async (err, user) => {
+      if (!user) {
+        res.status(404).json({
+          retCode: 1,
+          retText: "User not found",
+          retData: null
+        });
+        return
+      }
+
+      if (err) {
+        res.status(500).json({
+          retCode: 2,
+          retText: err.message,
+          retData: null
+        })
+        return
+      }
+
+      const payloadCancel = {
+        title: `Store's owner had cancelled your Customized Product!`,
+        description: `Code: ${code}`,
+        userId: mainUserId,
+        status: "not-seen",
+        typeOrder: 3,
+        typePayment: 3,
+        idOrder: "",
+        userType: "client"
+      }
+
+      const payloadSuccess = {
+        title: `Store's owner had confirmed your Customized Product!`,
+        description: `Code: ${code}`,
+        userId: mainUserId,
+        status: "not-seen",
+        typeOrder: 3,
+        typePayment: 3,
+        idOrder: "",
+        userType: "client"
+      }
+
+      const payload = (id) => {
+        switch (id) {
+          case 1:
+            return payloadSuccess
+          case 2:
+            return payloadCancel
+          default:
+            return
+        }
+      }
+
+      try {
+        const notification = new Notification(payload(typeConfirm));
+        const result = await notification.save();
+        res.json({
+          retCode: 0,
+          retText: "Push notification for customized product to confirm for client successfully",
+          retData: result,
+        });
+      } catch (error) {
+        res.status(500).send(error);
+      }
+    })
+  }
+
   createAdmin(req, res, next) {
     const { mainUserId, typeOrder, idOrder, typePayment } = req.body || {}
     User.findOne({ "_id": mainUserId }).exec(async (err, user) => {

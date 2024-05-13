@@ -19,13 +19,23 @@ const socketIo = require("socket.io")(server, {
 socketIo.on("connection", (socket) => {
   // console.log("New client connected " + socket.id);
 
+  socket.on('reviewCustomizedProduct', (data) => {
+    // console.log("reviewCustomizedProduct")
+    socketIo.emit('notiForReviewCustomizedProduct', data)
+  });
+
+  socket.on('createCustomizedProductClient', (data) => {
+    // console.log("createCustomizedProductClient")
+    socketIo.emit('notification', data)
+  });
+
   socket.on('createOrder', (data) => {
     socketIo.emit('notification', data)
   });
 
   socket.on('updateStatusOrderClient', (data) => {
-    socketIo.emit('getNewNotificationsInClient', data)
     // console.log("data", data)
+    socketIo.emit('getNewNotificationsInClient', data)
   });
 
   socket.on("disconnect", () => {
