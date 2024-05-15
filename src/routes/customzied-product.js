@@ -30,7 +30,7 @@ router.put(
 // GET LIST CUSTOMIZED PRODUCTS' CLIENT [POST]
 router.post(
   "/getListClient",
-  [authJwt.verifyToken],
+  // [authJwt.verifyToken],
   CustomizedProductController.getListCustomizedProductClient
 )
 
