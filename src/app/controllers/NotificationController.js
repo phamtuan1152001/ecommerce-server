@@ -464,6 +464,71 @@ class NotificationController {
     })
   }
   /* End */
+
+  // COMMON
+  readAll(req, res, next) {
+    try {
+      const { userId, userType } = req.body || {}
+      if (userType === "admin") {
+        Notification.updateMany(
+          {
+            userType: "admin"
+          },
+          {
+            $set: {
+              "status": "seen"
+            }
+          }
+        ).exec((err, record) => {
+          if (err) {
+            res.status(500).json({
+              retCode: 2,
+              retText: err.message,
+              retData: null
+            })
+            return
+          }
+
+          return res.json({
+            retCode: 0,
+            retText: "Read all notification successfully",
+            retData: record,
+          })
+        })
+      } else {
+        Notification.updateMany(
+          {
+            userId,
+            userType: "client"
+          },
+          {
+            $set: {
+              "status": "seen"
+            }
+          }
+        ).exec((err, record) => {
+          if (err) {
+            res.status(500).json({
+              retCode: 2,
+              retText: err.message,
+              retData: null
+            })
+            return
+          }
+
+          return res.json({
+            retCode: 0,
+            retText: "Read all notification successfully",
+            retData: record,
+          })
+        })
+      }
+    } catch (err) {
+      res.status(500).send({
+        message: err.message,
+      });
+    }
+  }
 }
 
 module.exports = new NotificationController()

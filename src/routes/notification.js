@@ -3,6 +3,13 @@ const router = express.Router();
 const { authJwt } = require("../app/middleware");
 const NotificationController = require("../app/controllers/NotificationController");
 
+// COMMON
+router.put(
+  "/read-all-notification",
+  [authJwt.verifyToken],
+  NotificationController.readAll
+)
+
 /* CLIENT */
 router.post(
   "/push-noti-client-confirm-admin-offer-customized-product",
