@@ -28,7 +28,7 @@ router.post(
 )
 router.post(
   "/get-notifications-client",
-  [authJwt.verifyToken],
+  // [authJwt.verifyToken],
   NotificationController.getListNotificationClient
 )
 router.put(
