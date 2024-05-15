@@ -4,6 +4,74 @@ const common = require("../../utils/common")
 
 class NotificationController {
   /* CLIENT */
+  async pushNotiClientConfirmAdminOfferCustomizedProduct(req, res, next) {
+    const { userId, code, typeConfirmClient } = req.body || {}
+    User.findOne({ "_id": userId }).exec(async (err, user) => {
+      if (!user) {
+        res.status(404).json({
+          retCode: 1,
+          retText: "User not found",
+          retData: null
+        });
+        return
+      }
+
+      if (err) {
+        res.status(500).json({
+          retCode: 2,
+          retText: err.message,
+          retData: null
+        })
+        return
+      }
+
+      const payloadCancel = {
+        title: `Customer ${user.fullName} rejects store's owner offer about customized product!`,
+        description: `Code: ${code}`,
+        userId,
+        status: "not-seen",
+        typeOrder: 3,
+        typePayment: 3,
+        idOrder: "",
+        userType: "admin"
+      }
+
+      const payloadConfirm = {
+        title: `Customer ${user.fullName} accept store's owner offer about customized product!`,
+        description: `Code: ${code}`,
+        userId,
+        status: "not-seen",
+        typeOrder: 3,
+        typePayment: 3,
+        idOrder: "",
+        userType: "admin"
+      }
+
+      const payload = (type) => {
+        switch (type) {
+          case 1:
+            return payloadConfirm
+          case 2:
+            return payloadCancel
+          default:
+            return
+        }
+      }
+
+      try {
+        const notification = new Notification(payload(typeConfirmClient));
+        const result = await notification.save();
+        res.json({
+          retCode: 0,
+          retText: "Push notification client and admin offer customized product successfully",
+          retData: result,
+        });
+      } catch (error) {
+        res.status(500).send(error);
+      }
+    })
+  }
+
   async pushNotiToAdminCustomizedProduct(req, res, next) {
     const { userId, code } = req.body || {}
     User.findOne({ "_id": userId }).exec(async (err, user) => {

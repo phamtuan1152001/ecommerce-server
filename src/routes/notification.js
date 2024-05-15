@@ -5,6 +5,11 @@ const NotificationController = require("../app/controllers/NotificationControlle
 
 /* CLIENT */
 router.post(
+  "/push-noti-client-confirm-admin-offer-customized-product",
+  [authJwt.verifyToken],
+  NotificationController.pushNotiClientConfirmAdminOfferCustomizedProduct
+)
+router.post(
   "/push-noti-customized-product",
   [authJwt.verifyToken],
   NotificationController.pushNotiToAdminCustomizedProduct

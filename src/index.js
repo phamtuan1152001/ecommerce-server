@@ -19,6 +19,10 @@ const socketIo = require("socket.io")(server, {
 socketIo.on("connection", (socket) => {
   // console.log("New client connected " + socket.id);
 
+  socket.on('clientAcceptAdminOfferCustomizedProduct', (data) => {
+    socketIo.emit('notification', data)
+  });
+
   socket.on('reviewCustomizedProduct', (data) => {
     // console.log("reviewCustomizedProduct")
     socketIo.emit('notiForReviewCustomizedProduct', data)
