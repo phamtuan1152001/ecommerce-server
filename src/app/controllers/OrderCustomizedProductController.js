@@ -125,7 +125,9 @@ class OrderCustomizedProductController {
 
   async getDetailOrderCustomizedProductClient(req, res, next) {
     try {
-      const result = await OrderCustomizedProduct.findById(req.params.id)
+      const result = await OrderCustomizedProduct
+        // .findById(req.params.id)
+        .findOne({ customizedProductId: req.params.id })
         .populate({
           path: "customizedProduct",
         })
@@ -164,7 +166,7 @@ class OrderCustomizedProductController {
 
       return { limit, offset };
     };
-    const { page, size, orderText, dateStart, dateEnd } = req.body;
+    const { page, size, orderText, codeOrder, dateStart, dateEnd } = req.body;
 
     const filter = {};
 
@@ -181,6 +183,12 @@ class OrderCustomizedProductController {
       const searching = { $regex: new RegExp(orderText), $options: "i" }
       Object.assign(filter, {
         "orderAddress.fullName": searching
+      })
+    }
+
+    if (codeOrder) {
+      Object.assign(filter, {
+        _id: codeOrder
       })
     }
 
